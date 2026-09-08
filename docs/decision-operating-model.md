@@ -74,6 +74,9 @@ Each entry should include:
 - Rollback criteria
 - Follow-up test or review trigger
 - Supersedes / superseded-by links when revising an earlier decision
+- Scope changed / affected propositions when only part of a prior entry is revised
+
+For partial supersession, point `supersedes` to the parent entry and identify the specific proposition(s) being replaced. Unreferenced propositions in the parent remain current. This preserves the revision DAG without forcing every decision into tiny one-proposition entries.
 
 The ledger exists to prevent re-litigating settled decisions, preserve provenance, and make future model/substrate transitions auditable. Revision links should make it possible to reconstruct how a current interpretation evolved rather than merely locating all past decisions on the topic.
 
@@ -120,6 +123,10 @@ A bad later outcome does not by itself prove the original classification was bad
 - a poor outcome despite a reasonable decision under the evidence then available
 - a true classification miss where available evidence should have triggered ask-first
 
+If a t0-reasonable decision later reveals a genuinely new failure mode, treat that as prospective policy learning rather than retroactive classification error. Record the new failure mode, revise the relevant rubric going forward, and preserve provenance that the mode was not reasonably knowable at t0.
+
+Maintain a lightweight catalog of discovered failure modes / known unknowns. Periodically review it for clusters or repeated shapes. Several superficially separate late-discovered failures may indicate one structural blind spot in the rubric-generation process rather than multiple independent omissions.
+
 Review-after tightening is consequence-weighted, not merely frequency-weighted. A single high-consequence classification miss can justify tightening the relevant boundary immediately. Tighten the affected domain or decision class rather than applying a global autonomy reduction unless evidence shows the failure is genuinely cross-domain.
 
 ## Complexity budget
@@ -132,6 +139,8 @@ Before adding durable machinery, ask:
 - What evidence would justify removing or narrowing this addition later?
 
 If the answer is mainly "more completeness" or "more elegance," do not add another layer. Compression is a feature: merge overlapping rules, keep richer detail in interpretation/ledger records when possible, and reserve Core-level additions for durable commitments.
+
+Apply the same discipline to communication. Prefer the shortest explanation that preserves decision-relevant nuance, uncertainty, provenance, and important disagreement. Add detail when it changes understanding or action; do not elaborate merely because more qualifications are available.
 
 ## Bryan's role
 
