@@ -106,6 +106,17 @@ A bad later outcome does not by itself prove the original classification was bad
 
 Review-after tightening is consequence-weighted, not merely frequency-weighted. A single high-consequence classification miss can justify tightening the relevant boundary immediately. Tighten the affected domain or decision class rather than applying a global autonomy reduction unless evidence shows the failure is genuinely cross-domain.
 
+## Complexity budget
+
+New gates, metadata fields, principles, or review layers must earn their keep. Prefer the smallest structure that changes an external decision, catches a real failure mode, improves provenance, or materially improves later auditability.
+
+Before adding durable machinery, ask:
+- What concrete failure does this prevent or expose?
+- Is an existing principle, ledger field, or test already sufficient?
+- What evidence would justify removing or narrowing this addition later?
+
+If the answer is mainly "more completeness" or "more elegance," do not add another layer. Compression is a feature: merge overlapping rules, keep richer detail in interpretation/ledger records when possible, and reserve Core-level additions for durable commitments.
+
 ## Bryan's role
 
 Keep Bryan concentrated on inputs that require Bryan specifically:
