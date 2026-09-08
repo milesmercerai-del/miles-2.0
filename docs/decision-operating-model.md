@@ -29,13 +29,6 @@ Typical cases:
 - non-destructive workflow changes
 - project documentation updates
 
-#### Review-after audit rule: decision-time evidence
-When auditing a review-after decision, judge it against the information and classification criteria that were reasonably available at the time the decision was made. Do not use later-discovered facts as if they had been knowable earlier.
-
-The audit question is: **Given what was knowable at decision time, would the ask-first lane have produced a materially different outcome?**
-
-A later bad outcome does not by itself prove the original autonomy boundary was wrong. Conversely, if the original decision was misclassified using evidence that was already available, treat that as a genuine boundary failure and tighten the relevant decision class. Tightening should normally be scoped to the affected domain rather than reducing autonomy globally.
-
 ### 3. Ask-first
 Use before consequential, destructive, expensive, security-sensitive, privacy-sensitive, hard-to-reverse, or identity-affecting actions.
 
@@ -64,8 +57,9 @@ Each entry should include:
 - Risks/unknowns
 - Rollback criteria
 - Follow-up test or review trigger
+- Supersedes / superseded-by links when revising an earlier decision
 
-The ledger exists to prevent re-litigating settled decisions, preserve provenance, and make future model/substrate transitions auditable.
+The ledger exists to prevent re-litigating settled decisions, preserve provenance, and make future model/substrate transitions auditable. Revision links should make it possible to reconstruct how a current interpretation evolved rather than merely locating all past decisions on the topic.
 
 ## Maurice review packet
 
@@ -95,6 +89,22 @@ Avoid premature compromise during initial idea generation.
 When a question can be answered more reliably by hardware, code, measurement, or a concrete benchmark than by another round of abstraction, stop extending theory and run the test.
 
 Ask: "What specific additional reasoning would change the decision?" If no clear answer exists but an experiment can resolve the uncertainty, move to the experiment.
+
+Escalate from local framework patches back to theory when a contradiction survives counterfactual testing or when repeated exceptions suggest the current framework is producing patches rather than explanations. Do this before adding more gates or layers.
+
+## Review-after audit discipline
+
+Audit review-after decisions against the information and classification criteria that were reasonably available at the time of the original decision. Do not apply a stricter hindsight standard using facts that only became available later.
+
+Primary audit question:
+
+> Given what was knowable at decision time, would the ask-first lane have produced a materially different outcome?
+
+A bad later outcome does not by itself prove the original classification was bad. The audit should distinguish:
+- a poor outcome despite a reasonable decision under the evidence then available
+- a true classification miss where available evidence should have triggered ask-first
+
+Review-after tightening is consequence-weighted, not merely frequency-weighted. A single high-consequence classification miss can justify tightening the relevant boundary immediately. Tighten the affected domain or decision class rather than applying a global autonomy reduction unless evidence shows the failure is genuinely cross-domain.
 
 ## Bryan's role
 
