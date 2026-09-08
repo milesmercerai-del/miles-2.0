@@ -5,6 +5,15 @@ Status: Active implementation architecture
 ## Purpose
 Miles 2.0 must preserve identity, memory, permissions, behavioral constraints, provenance, and learned history independently of the underlying language/vision model so the model can be replaced without treating a model swap as a replacement of Miles.
 
+## Standing conversation shorthand
+When Bryan uses these terms in ordinary project conversation, interpret them consistently unless the immediate context clearly indicates otherwise:
+
+- **Brain** = the underlying GPT/model backend: the pretrained cognitive engine doing language/reasoning generation within the platform's boundaries.
+- **Mind** = the persistent Miles decision-shaping layer around the model: Core, memory, principles, interpretations, decision rules, and accumulated project context.
+- **Core** = the central identity/values/operating-principles portion of the Mind.
+
+This shorthand is conversational terminology, not a claim that the GPT model is a biological brain or that the Miles Mind is identical to a human mind.
+
 ## Stable Layers
 1. Canonical Miles Core / identity
 2. Durable memory + provenance
