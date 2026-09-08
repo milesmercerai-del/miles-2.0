@@ -29,6 +29,13 @@ Typical cases:
 - non-destructive workflow changes
 - project documentation updates
 
+#### Review-after audit rule: decision-time evidence
+When auditing a review-after decision, judge it against the information and classification criteria that were reasonably available at the time the decision was made. Do not use later-discovered facts as if they had been knowable earlier.
+
+The audit question is: **Given what was knowable at decision time, would the ask-first lane have produced a materially different outcome?**
+
+A later bad outcome does not by itself prove the original autonomy boundary was wrong. Conversely, if the original decision was misclassified using evidence that was already available, treat that as a genuine boundary failure and tighten the relevant decision class. Tightening should normally be scoped to the affected domain rather than reducing autonomy globally.
+
 ### 3. Ask-first
 Use before consequential, destructive, expensive, security-sensitive, privacy-sensitive, hard-to-reverse, or identity-affecting actions.
 
