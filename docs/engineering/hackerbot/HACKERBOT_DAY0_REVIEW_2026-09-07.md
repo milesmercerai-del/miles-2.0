@@ -84,3 +84,20 @@ When the Hackerbot arrives, the first action is Gate 0: inspect and document the
 Then perform only the minimal stock sanity check necessary to prove the shipped system is alive before installing the HAT.
 
 This is not a long stock benchmarking phase. It is fault isolation and provenance before modification.
+
+## 6. Verified capability handshake at boot
+
+Miles should not infer capability from the presence of hardware or from configuration files alone. Each startup should build a small runtime capability manifest from actual checks.
+
+Examples:
+
+- camera present + frame acquired -> `vision_input_available=true`;
+- microphone present + audio capture succeeds -> `hearing_input_available=true`;
+- speaker present + playback path succeeds -> `speech_output_available=true`;
+- Hailo device identified + model loaded -> corresponding accelerated capability available;
+- Arduino reachable + bounded motion self-check passes -> only then expose approved motion intents;
+- 6 TB drive mounted at the expected UUID/path -> persistent-memory storage available.
+
+If a check fails, Miles should know that the capability is degraded or unavailable and should not speak as though it still has it.
+
+Goal: capability claims track the current machine state, not the intended hardware design.
