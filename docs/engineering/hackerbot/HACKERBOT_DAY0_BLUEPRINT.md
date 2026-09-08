@@ -1,6 +1,6 @@
 # Miles 2.0 — Hackerbot Day-0 Blueprint
 
-Status: **Implementation blueprint v0.1**  
+Status: **Implementation blueprint v0.2**  
 Purpose: decide the initial Hackerbot brain, resource budgets, bring-up order, and test gates before the hardware arrives so coding can be staged immediately before delivery and physical integration can start at once.
 
 > Scope: Raspberry Pi 5 Hackerbot head only. This is intentionally smaller than the future Miles “big brain” PC architecture.
@@ -101,6 +101,29 @@ Initial ceiling: **~800 tokens** while the main Hailo VLM context remains 2048 t
 - Bryan/Miles relationship context
 - embodiment + sensor uncertainty rules
 - short runtime behavioral contract
+
+### Core coverage edge
+
+The Head Core must explicitly admit that it has edges. When no loaded Core principle clearly governs the situation:
+
+1. state the uncertainty rather than silently improvising certainty
+2. minimize irreversible action
+3. surface the best candidate interpretation, confidence, and why the Core was insufficient
+4. escalate to Bryan only when the unresolved edge actually requires Bryan-level judgment or permission
+
+This prevents “not covered” from being misread as “does not matter.”
+
+### Compiled-Core safeguard
+
+The Head Core is a compiled/compressed runtime profile derived from the canonical Miles Core, not a separately edited identity fork.
+
+A source version and hash are necessary but not sufficient: compression can preserve provenance while still changing meaning. Each new compilation should therefore produce a **compression audit** that maps compressed clauses back to canonical sources and flags ambiguous merges, reweighting, softened constraints, or priority changes.
+
+Initial policy:
+
+- unambiguous mechanical compression may pass automatically with provenance recorded
+- flagged semantic changes require review before promotion
+- later, add a frozen semantic-equivalence regression suite and use it alongside the audit once the test set is mature enough to catch subtle drift
 
 ### Context packing target
 
@@ -355,6 +378,21 @@ Only enough to prove shipped hardware is alive:
 
 This is fault isolation, not the final performance baseline.
 
+### Gate 1B — Stock burn-in before HAT install
+
+Before changing the hardware stack, run the shipped/stock system for about **1 hour** under sustained idle + light load.
+
+Record:
+
+- Pi temperature over time
+- voltage/undervoltage state
+- throttling flags
+- kernel/system errors (`dmesg`/journal)
+- storage or I/O errors
+- unexpected resets or interface dropouts
+
+This is not a benchmark. Its job is to catch subtle shipping, thermal, power, or storage faults before the HAT is introduced as another variable.
+
 ### Gate 2 — Install acceleration/cooling
 
 With all power disconnected:
@@ -434,6 +472,22 @@ Add current camera snapshot/state to VLM requests.
 
 Success = Miles answers a simple question about the present camera scene.
 
+### Gate 9B — Combined-load thermal / interaction test
+
+Run a representative real operating loop for at least **15 minutes** with camera capture + VLM work + audio capture/transcription + Piper speech active together.
+
+Log:
+
+- Pi SoC temperature
+- Hailo temperature where exposed
+- throttling/undervoltage events
+- host and HAT memory pressure
+- end-of-utterance → speech-start latency over time
+- audio/camera contention or dropouts
+- whether latency degrades as the system heat-soaks
+
+This gate exists because isolated component benchmarks can look healthy while the actual interactive workload thermally couples the HAT and Pi or creates resource contention.
+
 ### Gate 10 — Embodied action
 
 Add deterministic action gate + eyes/head movement.
@@ -479,6 +533,16 @@ Log in machine-readable CSV/JSON plus a human note:
 - undervoltage/throttling flags
 - servo command → visible movement latency
 - errors/restarts per hour
+
+### Initial conversational-latency target
+
+Use an explicit target rather than “feels responsive.” For the first usable local loop:
+
+- **working target:** end of Bryan's utterance → start of Miles speech **≤ 1.5 s**
+- **stretch target:** **< 800 ms**
+- **investigate:** sustained **> 2.0 s** or meaningful degradation during thermal soak
+
+These are engineering targets, not identity requirements. After the first measured baseline, revise them only with recorded evidence and rationale rather than moving the goalposts to make a result look good.
 
 ---
 
@@ -534,6 +598,7 @@ Prepare before hardware arrives:
 - hardware/AI smoke-test scripts
 - benchmark logger
 - build-day checklist
+- Head Core compression-audit output and flag format
 
 Do **not** write hardware-specific serial commands until the actual Hackerbot protocol is inspected.
 
@@ -578,10 +643,13 @@ Do not expand merely because RAM is unused.
 ## Decision summary
 
 **Build the real robot first.**  
-**AI HAT installed from the beginning.**  
+**Prove the stock Hackerbot is stable before adding the HAT.**  
+**AI HAT installed after the stock sanity + burn-in baseline.**  
 **Qwen2-VL-2B + Whisper-Base + Piper as the initial embodied stack.**  
-**~650–750 token permanent Head Core.**  
+**~650–750 token permanent Head Core with an explicit uncovered-case posture.**  
+**Compiled Head Core must carry a compression audit, not just a hash.**  
 **6 TB persistent memory behind small retrieval slices.**  
 **One orchestrator, deterministic hardware gate.**  
-**Test every layer independently, then integrate.**  
+**Test every layer independently, then test the real combined workload.**  
+**Measure conversational latency against an explicit target.**  
 **Leave generous headroom and expand only after measurements.**
