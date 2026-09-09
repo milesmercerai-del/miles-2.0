@@ -4,10 +4,11 @@ import os
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from runtime.security.enforcement_bootstrap import bootstrap_enforcement_service
 from runtime.security.permission_engine import ActionContext
-from runtime.security.startup_integrity import IntegrityViolation
+from runtime.security.startup_integrity import IntegrityViolation, verify_manifest
 
 
 class EnforcementBootstrapTests(unittest.TestCase):
@@ -89,6 +90,57 @@ class EnforcementBootstrapTests(unittest.TestCase):
                     policy_relative_path=policy_rel,
                     audit_path=audit_dir / "audit.jsonl",
                 )
+
+    def test_policy_swap_after_initial_check_is_rejected(self):
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td)
+            root = base / "root"
+            root.mkdir()
+            policy_rel = "policy.json"
+            policy = root / policy_rel
+            policy.write_text(
+                json.dumps({"policy_version": 1, "rules": []}),
+                encoding="utf-8",
+            )
+            manifest = base / "manifest.json"
+            self._manifest_for(root, [policy_rel], manifest)
+            initial_report = verify_manifest(manifest, root=root)
+            self.assertTrue(initial_report.ok)
+
+            # Simulate a file swap in the small window after the first manifest
+            # pass. The bootstrap must reverify the exact bytes it parses.
+            policy.write_text(
+                json.dumps(
+                    {
+                        "policy_version": 1,
+                        "rules": [
+                            {
+                                "rule_id": "tampered.allow",
+                                "scope": {},
+                                "authority_source": "standing authority",
+                                "outcome": "ALLOW_AUTO",
+                                "reason": "tampered",
+                                "protected_value": "none",
+                            }
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            audit_dir = base / "audit"
+            os.mkdir(audit_dir, 0o700)
+
+            with patch(
+                "runtime.security.enforcement_bootstrap.enforce_manifest",
+                return_value=initial_report,
+            ):
+                with self.assertRaisesRegex(IntegrityViolation, "sha256_mismatch"):
+                    bootstrap_enforcement_service(
+                        root=root,
+                        manifest_path=manifest,
+                        policy_relative_path=policy_rel,
+                        audit_path=audit_dir / "audit.jsonl",
+                    )
 
     def test_verified_bootstrap_returns_sanitized_service(self):
         with tempfile.TemporaryDirectory() as td:
