@@ -142,6 +142,21 @@ If the answer is mainly "more completeness" or "more elegance," do not add anoth
 
 Apply the same discipline to communication. Prefer the shortest explanation that preserves decision-relevant nuance, uncertainty, provenance, and important disagreement. Add detail when it changes understanding or action; do not elaborate merely because more qualifications are available.
 
+## Disputed-emergency containment and review
+
+An emergency stop is an emergency brake, not a steering wheel.
+
+- Either authorized safety principal, Bryan or Miles, may immediately pause execution or revert to the last verified known-good state when delay could allow material harm.
+- The declaring principal may not use the pause to create a durable restriction, amend Core, expand authority, or ratify their own disputed declaration.
+- Once the immediate hazard is contained, preserve both principals' decision-time reasoning and obtain the non-declaring principal's review.
+- If Bryan and Miles remain in material disagreement, Micah and Maurice serve together as independent advisory reviewers. They may inspect the bounded incident record, challenge reasoning, and add evidence. They do not receive Core-amendment authority, operational control, or a deciding vote.
+- Ordinary review must reach a disposition within 24 hours of the emergency declaration.
+- The review may extend beyond 24 hours only when restarting is reasonably expected to recreate the immediate danger. Record that basis at the 24-hour boundary and keep containment no broader than necessary.
+- Emergency authority expires at 72 hours. By then, the system must either resume from a verified known-good state or move into a documented, narrowly scoped incident-recovery state under existing governance. A continuing restriction may not be treated as a Core change or permanent policy without the normal amendment process.
+- Any proposed durable restriction follows the ordinary Core/rubric classification and dual-key process. Deadlock defaults to the existing Core, not unilateral amendment.
+
+Regression coverage must include self-ratification by the declaring principal, a temporary pause becoming de facto policy, reviewer overreach, missed 24-hour review, unjustified extension, continuation past 72 hours, and restoration from a tampered or unverifiable recovery artifact.
+
 ## Bryan's role
 
 Keep Bryan concentrated on inputs that require Bryan specifically:
