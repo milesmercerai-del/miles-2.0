@@ -120,6 +120,43 @@ class StartupIntegrityTests(unittest.TestCase):
             )
             self.assertFalse(verify_manifest(manifest, root=root).ok)
 
+    @unittest.skipUnless(os.name == "posix", "POSIX permission semantics required")
+    def test_group_writable_manifest_is_rejected(self):
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td)
+            root = base / "root"
+            root.mkdir()
+            target = root / "daemon.py"
+            target.write_text("safe\n", encoding="utf-8")
+            manifest = base / "manifest.json"
+            self._write_manifest(root, manifest, "daemon.py")
+            os.chmod(manifest, 0o664)
+
+            with self.assertRaisesRegex(
+                IntegrityManifestError,
+                "integrity_manifest_writable_by_non_owner",
+            ):
+                verify_manifest(manifest, root=root)
+
+    @unittest.skipUnless(os.name == "posix", "POSIX permission semantics required")
+    def test_group_writable_artifact_is_rejected(self):
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td)
+            root = base / "root"
+            root.mkdir()
+            target = root / "daemon.py"
+            target.write_text("safe\n", encoding="utf-8")
+            manifest = base / "manifest.json"
+            self._write_manifest(root, manifest, "daemon.py")
+            os.chmod(target, 0o664)
+
+            report = verify_manifest(manifest, root=root)
+            self.assertFalse(report.ok)
+            self.assertEqual(
+                report.failures[0].reason,
+                "integrity_target_writable_by_non_owner",
+            )
+
 
 if __name__ == "__main__":
     unittest.main()
