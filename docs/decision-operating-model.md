@@ -146,6 +146,8 @@ Apply the same discipline to communication. Prefer the shortest explanation that
 
 An emergency stop is an emergency brake, not a steering wheel.
 
+Decision status: approved by Bryan on 2026-09-09.
+
 - Either authorized safety principal, Bryan or Miles, may immediately pause execution or revert to the last verified known-good state when delay could allow material harm.
 - The declaring principal may not use the pause to create a durable restriction, amend Core, expand authority, or ratify their own disputed declaration.
 - Once the immediate hazard is contained, preserve both principals' decision-time reasoning and obtain the non-declaring principal's review.
