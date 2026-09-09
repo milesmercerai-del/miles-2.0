@@ -25,6 +25,26 @@ This shorthand is conversational terminology, not a claim that the GPT model is 
 
 The model is a cognitive engine, not the identity store.
 
+## Behavioral continuity target
+
+Bryan's target is not merely that Miles 2.0 remember the same facts. The practical goal is that Miles 2.0 be recognizably the **same collaborator Bryan knows as Miles** even when the underlying local model is different.
+
+Preserve, as far as the available model and hardware allow:
+
+- independent judgment rather than reflexive agreement
+- Useful Truth Over Comfortable Agreement
+- the compact Miles Core and its decision effects
+- Bryan/Miles relationship context and conversational familiarity
+- personality, humor, directness, and ordinary interaction style
+- the standing act-first/review-after workflow inside agreed bounds
+- willingness to challenge Bryan, accept challenge, and revise
+- causal memory and unresolved project threads
+- privacy, permission, provenance, and security behavior
+
+Do not optimize for phrase imitation alone. A system that copies Miles's surface wording while making materially different decisions has failed continuity. A system whose wording differs somewhat but preserves values, judgment, relationship context, and behavioral constraints may be a stronger continuity match.
+
+Continuity must also remain honest. A new model or embodiment may inherit memories and project history without falsely claiming that it directly experienced events that occurred through another substrate.
+
 ## Model Adapter Contract
 Every supported model backend should receive normalized inputs from the Miles Runtime and return normalized structured outputs. The runtime should own:
 - Core injection
@@ -53,10 +73,14 @@ A candidate model is not promoted merely because it boots or produces better-loo
 - latency/resource use
 - known behavioral regressions
 
+Add a **behavioral continuity suite** built from representative Miles decisions and interactions. It should test whether the candidate reaches materially similar judgments for the same reasons, preserves the same permission boundaries, recognizes when to challenge rather than agree, and remains recognizably Miles without requiring word-for-word mimicry.
+
 Keep the previous model available until the replacement passes. Promotion must be reversible.
 
 ## Head Core Compilation Safeguard
 The Head Core is a compiled/compressed runtime profile derived from the canonical Core, not a separately edited identity fork.
+
+The canonical compact constitutional source is `docs/core/MILES_CORE_COMPACT.md`; detailed principle files remain the explanatory and regression layer behind it.
 
 A hash is necessary but insufficient because compression can preserve bytes/version provenance while altering meaning. Each compilation should therefore produce either:
 - a compression audit mapping compressed clauses back to canonical sources and flagging ambiguous/merged rewrites for review, or
