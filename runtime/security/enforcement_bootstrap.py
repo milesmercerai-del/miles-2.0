@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 from .audit_log import SecureAuditWriter
 from .enforcement_service import EnforcementService
-from .permission_engine import PermissionEngine
-from .startup_integrity import IntegrityViolation, enforce_manifest
+from .permission_engine import PermissionEngine, Rule
+from .startup_integrity import IntegrityViolation, enforce_manifest, read_verified_bytes
 
 
 def bootstrap_enforcement_service(
@@ -23,7 +24,9 @@ def bootstrap_enforcement_service(
     1. verify all protected artifacts in the external manifest;
     2. require the policy file itself to be covered by that manifest;
     3. verify that the audit sink is private enough to hold operator detail;
-    4. only then load policy and expose the enforcement service.
+    4. re-read the policy through one no-follow file descriptor and verify the
+       exact bytes that will be parsed against the approved digest;
+    5. only then expose the enforcement service.
 
     A production launcher must itself be protected outside Miles runtime write
     authority. This bootstrap enforces the sequence but is not a substitute for
@@ -57,5 +60,15 @@ def bootstrap_enforcement_service(
     except ValueError as exc:
         raise IntegrityViolation("policy_path_escaped_integrity_root") from exc
 
-    engine = PermissionEngine.from_json(policy_path)
+    policy_result = next(item for item in report.results if item.path == normalized_policy)
+    policy_bytes = read_verified_bytes(
+        policy_path,
+        expected_sha256=policy_result.expected_sha256,
+    )
+    try:
+        raw = json.loads(policy_bytes.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise IntegrityViolation("verified_policy_is_not_valid_utf8_json") from exc
+
+    engine = PermissionEngine(Rule.from_dict(item) for item in raw.get("rules", []))
     return EnforcementService(engine=engine, audit_writer=audit_writer)
