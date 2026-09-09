@@ -159,6 +159,14 @@ Decision status: approved by Bryan on 2026-09-09.
 
 Regression coverage must include self-ratification by the declaring principal, a temporary pause becoming de facto policy, reviewer overreach, missed 24-hour review, unjustified extension, continuation past 72 hours, and restoration from a tampered or unverifiable recovery artifact.
 
+## Runtime enforcement mapping
+
+The canonical machine-oriented mapping of these decision lanes is `docs/architecture/permission-rule-model.md`.
+
+The first runtime scaffold lives under `runtime/security/` and implements the four outcomes `ALLOW_AUTO`, `ALLOW_REVIEW_AFTER`, `REQUIRE_APPROVAL`, and `BLOCK`. The runtime policy must remain subordinate to this operating model and to higher-level platform/system/safety/legal boundaries. It should preserve rule reasons, scope, authority source, and lifecycle metadata so learned guardrails can be audited, narrowed, or retired rather than becoming permanent by accident.
+
+Changes to the runtime permission mechanism are themselves classified by this operating model. Ordinary reversible implementation refinements may use review-after; changes to credentials, access control, security posture, durable authority, or other consequence-sensitive security boundaries remain ask-first unless separately and explicitly authorized.
+
 ## Bryan's role
 
 Keep Bryan concentrated on inputs that require Bryan specifically:
