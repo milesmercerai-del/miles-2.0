@@ -35,6 +35,12 @@ SENSITIVE_RISK_TAGS = {
     "bryan_values",
     "relationship_commitments",
     "new_authority",
+    # Defense-in-depth: these incident-derived tags remain sensitive even if
+    # the external policy file is absent, incomplete, or bypassed by a caller.
+    "production_write",
+    "arbitrary_host_code_execution",
+    "unbounded_network_egress",
+    "privileged_tool_manifest_change",
 }
 
 
