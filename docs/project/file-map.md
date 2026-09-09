@@ -2,7 +2,9 @@
 
 Tidied: 2026-09-05
 
-This is the clean working package. Current material is kept visible; older and superseded material remains recoverable inside the historical archive.
+**Scope note:** this file records the numbered layout of Bryan's tidy personal project package/ZIP. It is not a literal directory listing of the live GitHub repository. For the current GitHub authority map, use `docs/project/source-of-truth.md`.
+
+This is the clean personal working-package layout. Current material is kept visible; older and superseded material remains recoverable inside the historical archive.
 
 ## Folder map
 
@@ -17,7 +19,7 @@ This is the clean working package. Current material is kept visible; older and s
 
 ## What is current
 
-- The source-of-truth rules in `01 - Active Source of Truth` control.
+- The source-of-truth rules in `01 - Active Source of Truth` control inside the personal package.
 - The visible Patricia and Terry cores are v1.1.
 - The visible Future Ideas packages are the September 4 main collection and its cumulative addition.
 - Everything inside `07 - Archive/Historical Material - Through 2026-09-05.zip` is retained for history or recovery and does not override active material.
@@ -35,4 +37,6 @@ This is the clean working package. Current material is kept visible; older and s
 
 ## GitHub translation
 
-For the repository, these concepts map to `docs/project`, `docs/core`, `docs/future-ideas`, `docs/engineering`, `docs/references`, `docs/portfolio`, and `docs/archive`. ZIP files remain milestone/back-up artifacts rather than the primary editable source.
+The GitHub repository has evolved beyond the original one-to-one package mapping. Current live repository areas are defined in `docs/project/source-of-truth.md`; do not infer that a numbered personal-package folder must have a same-named GitHub directory.
+
+ZIP files remain milestone/back-up artifacts rather than the primary editable source.
