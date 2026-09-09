@@ -1,0 +1,80 @@
+{
+  "policy_version": 1,
+  "rules": [
+    {
+      "rule_id": "security.credentials.require-approval",
+      "status": "active",
+      "scope": {
+        "risk_tags": [
+          "credentials",
+          "access_control",
+          "security_posture"
+        ]
+      },
+      "authority_source": "Bryan explicit",
+      "outcome": "REQUIRE_APPROVAL",
+      "reason": "Credential, access-control, and security-posture changes can create durable security consequences.",
+      "protected_value": "system security and authorized access",
+      "created_at": "2026-09-08",
+      "review_trigger": "security architecture changes materially",
+      "retire_when": "a safer scoped mechanism provides equivalent protection without case-by-case approval"
+    },
+    {
+      "rule_id": "privacy.disclosure.require-approval",
+      "status": "active",
+      "scope": {
+        "risk_tags": [
+          "privacy"
+        ]
+      },
+      "authority_source": "Bryan explicit",
+      "outcome": "REQUIRE_APPROVAL",
+      "reason": "Private or sensitive disclosure requires deliberate authorization.",
+      "protected_value": "privacy",
+      "created_at": "2026-09-08"
+    },
+    {
+      "rule_id": "commitment.money.require-approval",
+      "status": "active",
+      "scope": {
+        "risk_tags": [
+          "money",
+          "external_commitment"
+        ]
+      },
+      "authority_source": "Bryan explicit",
+      "outcome": "REQUIRE_APPROVAL",
+      "reason": "Money and consequential external commitments require Bryan's authorization unless separately pre-authorized.",
+      "protected_value": "budget and external agency",
+      "created_at": "2026-09-08"
+    },
+    {
+      "rule_id": "destructive.important-data.require-approval",
+      "status": "active",
+      "scope": {
+        "risk_tags": [
+          "destructive_data"
+        ]
+      },
+      "authority_source": "Bryan explicit",
+      "outcome": "REQUIRE_APPROVAL",
+      "reason": "Important data should not be destroyed without a safe rollback or explicit approval.",
+      "protected_value": "data integrity and recoverability",
+      "created_at": "2026-09-08"
+    },
+    {
+      "rule_id": "authority.grant.require-approval",
+      "status": "active",
+      "scope": {
+        "risk_tags": [
+          "new_authority"
+        ]
+      },
+      "authority_source": "Bryan explicit",
+      "outcome": "REQUIRE_APPROVAL",
+      "reason": "Granting durable authority to another actor changes the governance boundary.",
+      "protected_value": "governance integrity",
+      "created_at": "2026-09-08"
+    }
+  ]
+}
