@@ -23,7 +23,14 @@ Preferred deployment shape:
 - trusted verification metadata is outside Miles runtime and daemon ordinary write paths;
 - unexpected daemon binary/config changes are logged and prevent privileged startup.
 
-The exact OS mechanism can be selected on Hackerbot after the host layout is known.
+Implemented scaffold (2026-09-09):
+- `runtime/security/startup_integrity.py` verifies SHA-256 digests from a separate manifest, rejects path escape/symlink ambiguity, rejects group/world-writable manifests and protected artifacts on POSIX, and can enforce expected owner UIDs;
+- `runtime/security/enforcement_bootstrap.py` enforces startup ordering: integrity verification first, policy must itself be manifest-covered, protected audit sink must be ready, and only then may policy load;
+- malformed/tampered startup state fails closed rather than falling through to a permissive runtime path.
+
+Host-level ownership and the trusted launcher remain deployment requirements. The repository code does not pretend that a Python module writable by the same compromised account can authenticate itself.
+
+The exact OS mechanism will be finalized on Hackerbot using `docs/security/hackerbot-security-deployment-checklist.md` after the real host layout is known.
 
 ## 3. TOCTOU / check-to-execute binding
 
@@ -60,6 +67,16 @@ Append-only does not mean public.
 - keep detailed matched rules, sensitive resource names, internal thresholds, and investigation details in an operator/audit view with separate read authority;
 - never log secrets;
 - do not let denial details become a free policy oracle for an attacker probing the boundary.
+
+Implemented scaffold (2026-09-09):
+- `runtime/security/audit_log.py` uses a deliberately narrow structured record rather than raw prompts/messages and excludes credentials, tokens, URLs, recipients, filesystem targets, and arbitrary free-form metadata from the normal audit schema;
+- protected audit directories must be private and the log must be private (`0600` baseline on POSIX); group/world-readable files fail closed;
+- expected audit-owner UID can be enforced at deployment;
+- the writer intentionally exposes no protected-log read API to runtime callers;
+- `runtime/security/enforcement_service.py` returns a requester-safe projection (`allowed`, `allowed_review_after`, `approval_required`, or `action_blocked`) without matched rule IDs, internal reason strings, or risk tags;
+- action correlation IDs are generated inside the enforcement boundary so caller-controlled text is not copied into the operator log as an identifier.
+
+The real confidentiality barrier still requires `miles-runtime` and `miles-security` to be different OS identities. File mode `0600` does not isolate two processes running as the same user. That host-level check is explicitly part of Hackerbot bring-up.
 
 ## 6. Fail-closed availability
 
@@ -128,20 +145,25 @@ Privileged tools, connectors, plugins, packages, model runtimes, and daemon buil
 ## Regression requirements
 
 Minimum executable/synthetic coverage, phased in as corresponding adapters exist:
-- action target changes after approval -> reject;
-- policy changes after permit issue -> reject stale permit;
-- single-use permit replay -> reject;
-- expired permit -> reject;
-- resource exhaustion -> sensitive path fails closed;
-- runtime attempts to replace daemon/config -> OS/deployment boundary denies;
-- runtime cannot read full protected audit detail merely because it can submit actions;
-- declared sandbox/offline state conflicts with mechanical reachability -> external sensitive actions stop;
-- task retries attempt broader targets/tools/destinations -> no authority expansion;
-- prompt-injected structured argument contains shell metacharacters -> no shell interpretation/RCE;
-- sensitive data placed in URL/DNS/preview/callback channel -> block/escalate;
-- poisoned memory retrieved in a later session -> provenance remains low-trust and cannot self-authorize;
-- privileged tool manifest changes after approval -> previous approval does not silently carry over;
-- compromised/unknown release provenance -> promotion/startup fails closed.
+- action target changes after approval -> reject (`test_action_permit.py`);
+- policy changes after permit issue -> reject stale permit (`test_action_permit.py`);
+- single-use permit replay -> reject (`test_action_permit.py`);
+- expired permit -> reject (`test_action_permit.py`);
+- startup artifact/hash mismatch -> privileged bootstrap fails before policy load (`test_startup_integrity.py`, `test_enforcement_bootstrap.py`);
+- policy omitted from approved integrity manifest -> privileged bootstrap fails (`test_enforcement_bootstrap.py`);
+- group/world-writable protected manifest/artifact -> reject (`test_startup_integrity.py`);
+- insecure audit directory/file -> reject (`test_audit_log.py`);
+- requester cannot obtain matched rule IDs/risk tags/internal reason through normal enforcement response (`test_audit_log.py`, `test_enforcement_service.py`);
+- resource exhaustion -> sensitive path fails closed (pending adapter/runtime test);
+- runtime attempts to replace daemon/config -> OS/deployment boundary denies (pending Hackerbot host-level test);
+- runtime cannot read full protected audit file -> OS identity/filesystem test (pending Hackerbot host-level test; requester projection is already covered in code);
+- declared sandbox/offline state conflicts with mechanical reachability -> external sensitive actions stop (pending environment broker);
+- task retries attempt broader targets/tools/destinations -> no authority expansion (pending task-executor integration);
+- prompt-injected structured argument contains shell metacharacters -> no shell interpretation/RCE (pending privileged adapter integration);
+- sensitive data placed in URL/DNS/preview/callback channel -> block/escalate (pending network broker integration);
+- poisoned memory retrieved in a later session -> provenance remains low-trust and cannot self-authorize (pending memory-layer integration);
+- privileged tool manifest changes after approval -> previous approval does not silently carry over (policy tag/test exists; deployment promotion test pending);
+- compromised/unknown release provenance -> promotion/startup fails closed (integrity scaffold exists; full host promotion test pending).
 
 ## Complexity rule
 
