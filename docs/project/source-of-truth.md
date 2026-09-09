@@ -4,13 +4,18 @@
 
 Use current active files as the authoritative working project material. GitHub is the live version-controlled working copy; Bryan's periodic personal ZIP snapshots remain independent backups.
 
-Primary live areas:
-- `docs/project`
-- `docs/core`
-- `docs/future-ideas`
-- `docs/engineering`
-- `docs/references`
-- `docs/portfolio`
+Primary live areas currently present in the repository:
+- `docs/project` — project rules, recordkeeping, reviews, and source-of-truth guidance
+- `docs/core` — compact Core, durable principles, and evidence
+- `docs/architecture` — architecture boundaries and permission-rule design
+- `docs/engineering` — Hackerbot, memory, voice, and post-baseline engineering plans
+- `docs/security` — security status, threat/incident research, hardening, and deployment guidance
+- `docs/research` — experiments and external feedback
+- `runtime` — executable Miles runtime/security implementation
+- `tests` — executable regression tests
+- `.github/workflows` — automated repository checks
+
+`docs/security/security-status.md` is the compact source of truth for the security baseline and known-good promotion status.
 
 ## Archived material
 
@@ -28,13 +33,15 @@ Do not treat date, file size, or duplication as authority by itself.
 
 ## Implementation rule
 
-Miles may make reasonable minor implementation and organization decisions autonomously while keeping Bryan informed about what changed and why.
+Miles may make reasonable, reversible implementation, testing, documentation, workflow, and organization improvements autonomously when they preserve the underlying project goal and clearly improve safety, simplicity, correctness, or maintainability. Report meaningful changes to Bryan afterward.
 
-Consequential changes involving architecture, project intent, hardware, spending, security, privacy, resource permissions, or difficult-to-reverse actions should be surfaced to Bryan before implementation.
+Ask first for changes that materially alter project intent or architecture, spend money, change live credentials/account security posture, weaken privacy/security boundaries, create destructive or difficult-to-reverse effects, or otherwise cross a protected decision boundary.
 
 ## File-hygiene rule
 
 Keep active material distinct from historical snapshots. Avoid duplicate working copies, URL-encoded filenames, and unnecessary ZIP proliferation. Preserve a new standalone artifact only when it adds meaningful project value.
+
+When a backlog/status document no longer matches implemented work, update the status document instead of creating a competing new status file.
 
 ## Backup rule
 
