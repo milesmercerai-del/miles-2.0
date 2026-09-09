@@ -163,6 +163,59 @@ def sha256_file(path: str | Path, *, chunk_size: int = 1024 * 1024) -> str:
         os.close(fd)
 
 
+def read_verified_bytes(
+    path: str | Path,
+    *,
+    expected_sha256: str,
+    expected_owner_uid: int | None = None,
+    max_bytes: int = 4 * 1024 * 1024,
+) -> bytes:
+    """Read the exact bytes that will be consumed, verifying them on the same fd."""
+    if not _valid_sha256(expected_sha256):
+        raise IntegrityViolation("invalid_expected_sha256")
+    if max_bytes <= 0:
+        raise ValueError("max_bytes must be positive")
+
+    target = Path(path)
+    flags = os.O_RDONLY | getattr(os, "O_CLOEXEC", 0) | getattr(os, "O_NOFOLLOW", 0)
+    try:
+        fd = os.open(target, flags)
+    except OSError as exc:
+        raise IntegrityViolation(f"unable_to_open_integrity_target:{target}") from exc
+
+    try:
+        st = os.fstat(fd)
+        if not stat.S_ISREG(st.st_mode):
+            raise IntegrityViolation(f"integrity_target_not_regular_file:{target}")
+        if st.st_size > max_bytes:
+            raise IntegrityViolation("verified_file_exceeds_size_limit")
+        if os.name == "posix":
+            if stat.S_IMODE(st.st_mode) & 0o022:
+                raise IntegrityViolation("integrity_target_writable_by_non_owner")
+            if expected_owner_uid is not None and st.st_uid != expected_owner_uid:
+                raise IntegrityViolation("integrity_target_owner_mismatch")
+
+        digest = hashlib.sha256()
+        chunks: list[bytes] = []
+        total = 0
+        while True:
+            block = os.read(fd, min(1024 * 1024, max_bytes - total + 1))
+            if not block:
+                break
+            total += len(block)
+            if total > max_bytes:
+                raise IntegrityViolation("verified_file_exceeds_size_limit")
+            digest.update(block)
+            chunks.append(block)
+
+        actual = digest.hexdigest()
+        if not hmac.compare_digest(actual, expected_sha256.lower()):
+            raise IntegrityViolation("sha256_mismatch")
+        return b"".join(chunks)
+    finally:
+        os.close(fd)
+
+
 def verify_manifest(
     manifest_path: str | Path,
     *,
@@ -195,8 +248,6 @@ def verify_manifest(
             except ValueError as exc:
                 raise IntegrityViolation("integrity_target_escaped_root") from exc
             if resolved != requested.absolute():
-                # A parent-component symlink changed the effective path. Even
-                # when it still resolves under root, reject the ambiguity.
                 raise IntegrityViolation("integrity_target_path_not_canonical")
 
             st = resolved.stat()
