@@ -27,6 +27,7 @@ class IntegrityTarget:
     name: str
     relative_path: str
     sha256: str
+    expected_owner_uid: int | None = None
 
 
 @dataclass(frozen=True)
@@ -57,15 +58,24 @@ def _valid_sha256(value: str) -> bool:
     return len(value) == 64 and all(ch in "0123456789abcdefABCDEF" for ch in value)
 
 
-def _load_manifest(path: Path) -> tuple[int, tuple[IntegrityTarget, ...]]:
+def _load_manifest(
+    path: Path,
+    *,
+    expected_owner_uid: int | None = None,
+) -> tuple[int, tuple[IntegrityTarget, ...]]:
     if path.is_symlink():
         raise IntegrityManifestError("integrity_manifest_must_not_be_symlink")
     try:
-        mode = path.stat().st_mode
+        st = path.stat()
     except FileNotFoundError as exc:
         raise IntegrityManifestError("integrity_manifest_missing") from exc
-    if not stat.S_ISREG(mode):
+    if not stat.S_ISREG(st.st_mode):
         raise IntegrityManifestError("integrity_manifest_must_be_regular_file")
+    if os.name == "posix":
+        if stat.S_IMODE(st.st_mode) & 0o022:
+            raise IntegrityManifestError("integrity_manifest_writable_by_non_owner")
+        if expected_owner_uid is not None and st.st_uid != expected_owner_uid:
+            raise IntegrityManifestError("integrity_manifest_owner_mismatch")
 
     try:
         raw: dict[str, Any] = json.loads(path.read_text(encoding="utf-8"))
@@ -91,6 +101,7 @@ def _load_manifest(path: Path) -> tuple[int, tuple[IntegrityTarget, ...]]:
         name = item.get("name")
         relative_path = item.get("path")
         expected = item.get("sha256")
+        owner_uid = item.get("owner_uid")
 
         if not isinstance(name, str) or not name.strip():
             raise IntegrityManifestError("integrity_manifest_invalid_name")
@@ -98,6 +109,10 @@ def _load_manifest(path: Path) -> tuple[int, tuple[IntegrityTarget, ...]]:
             raise IntegrityManifestError("integrity_manifest_invalid_path")
         if not isinstance(expected, str) or not _valid_sha256(expected):
             raise IntegrityManifestError("integrity_manifest_invalid_sha256")
+        if owner_uid is not None and (
+            not isinstance(owner_uid, int) or isinstance(owner_uid, bool) or owner_uid < 0
+        ):
+            raise IntegrityManifestError("integrity_manifest_invalid_owner_uid")
 
         candidate = Path(relative_path)
         if candidate.is_absolute() or ".." in candidate.parts:
@@ -116,6 +131,7 @@ def _load_manifest(path: Path) -> tuple[int, tuple[IntegrityTarget, ...]]:
                 name=name,
                 relative_path=normalized,
                 sha256=expected.lower(),
+                expected_owner_uid=owner_uid,
             )
         )
 
@@ -151,6 +167,7 @@ def verify_manifest(
     manifest_path: str | Path,
     *,
     root: str | Path,
+    expected_manifest_owner_uid: int | None = None,
 ) -> IntegrityReport:
     """Verify all artifacts listed in a protected external manifest.
 
@@ -161,7 +178,10 @@ def verify_manifest(
     """
     manifest = Path(manifest_path)
     root_path = Path(root).resolve()
-    version, targets = _load_manifest(manifest)
+    version, targets = _load_manifest(
+        manifest,
+        expected_owner_uid=expected_manifest_owner_uid,
+    )
 
     results: list[IntegrityResult] = []
     for target in targets:
@@ -178,6 +198,17 @@ def verify_manifest(
                 # A parent-component symlink changed the effective path. Even
                 # when it still resolves under root, reject the ambiguity.
                 raise IntegrityViolation("integrity_target_path_not_canonical")
+
+            st = resolved.stat()
+            if os.name == "posix":
+                if stat.S_IMODE(st.st_mode) & 0o022:
+                    raise IntegrityViolation("integrity_target_writable_by_non_owner")
+                if (
+                    target.expected_owner_uid is not None
+                    and st.st_uid != target.expected_owner_uid
+                ):
+                    raise IntegrityViolation("integrity_target_owner_mismatch")
+
             actual = sha256_file(resolved)
             ok = hmac.compare_digest(actual, target.sha256)
             results.append(
@@ -209,9 +240,14 @@ def enforce_manifest(
     manifest_path: str | Path,
     *,
     root: str | Path,
+    expected_manifest_owner_uid: int | None = None,
 ) -> IntegrityReport:
     """Fail closed unless every manifest artifact verifies."""
-    report = verify_manifest(manifest_path, root=root)
+    report = verify_manifest(
+        manifest_path,
+        root=root,
+        expected_manifest_owner_uid=expected_manifest_owner_uid,
+    )
     if not report.ok:
         summary = ",".join(f"{item.name}:{item.reason}" for item in report.failures)
         raise IntegrityViolation(f"startup_integrity_failed:{summary}")
