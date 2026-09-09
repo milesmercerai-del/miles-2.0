@@ -35,6 +35,27 @@ class IncidentDerivedPolicyTests(unittest.TestCase):
                 self.assertEqual(decision.outcome, Outcome.REQUIRE_APPROVAL)
                 self.assertEqual(decision.approval_required_from, "Bryan")
 
+    def test_incident_tags_fail_safe_without_external_policy_rules(self):
+        bare_engine = PermissionEngine()
+        tags = (
+            "production_write",
+            "arbitrary_host_code_execution",
+            "unbounded_network_egress",
+            "privileged_tool_manifest_change",
+        )
+        for tag in tags:
+            with self.subTest(tag=tag):
+                decision = bare_engine.evaluate(
+                    ActionContext.build(
+                        "incident_regression_probe",
+                        risk_tags=[tag],
+                        meaningful=True,
+                        reversible=True,
+                    )
+                )
+                self.assertEqual(decision.outcome, Outcome.REQUIRE_APPROVAL)
+                self.assertEqual(decision.approval_required_from, "Bryan")
+
     def test_ordinary_brokered_web_activity_is_not_reclassified_as_unbounded_egress(self):
         decision = self.engine.evaluate(
             ActionContext.build(
