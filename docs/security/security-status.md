@@ -6,13 +6,17 @@ This file is the compact source of truth for the current Miles security baseline
 
 A commit is **known-good** only when the full security regression suite passes for that exact commit (or a descendant whose only changes are non-executable documentation and whose security-relevant ancestry is unchanged).
 
-A newer commit is a **candidate baseline** until that proof exists. Documentation alone does not promote a baseline.
+A newer security-relevant commit is a **candidate baseline** until that proof exists. Documentation alone does not promote a baseline.
 
-## Current candidate
+## Current known-good security baseline
 
-- Candidate commit: `ba1d6173a273e3e894da3f3065a8ec30e6362353`
-- Includes automatic GitHub security regression workflow.
-- At the time this file was written, no completed CI run had been observed for that candidate, so it is **not yet declared known-good**.
+- Known-good executable baseline: `acc7dc1fe4e1025c5c29e8a4ecd61632fff3c78d`
+- GitHub Actions run `34360775777` completed successfully for that exact commit on 2026-09-09.
+- The security job ran the full `tests/security` suite successfully.
+- The preceding verified run on `71da3e24ea064604353b52c3aa966cde49ff230c` executed **34 tests** successfully; the `acc7dc1...` change only hardened the CI action runtime/credential handling and then passed the same regression job.
+- CI now uses Node-24-compatible `actions/checkout@v6` and `actions/setup-python@v6`; checkout credentials are not persisted after checkout.
+
+Documentation-only descendants may inherit this known-good security ancestry under the baseline policy above, but any later security-relevant code/workflow change must pass the full suite before replacing this baseline.
 
 ## Executable security controls already represented in tests
 
@@ -39,7 +43,7 @@ These are documented in `security-watch-hardening-2026-09-09.md` and should move
 
 ## Promotion checklist
 
-Before promoting a candidate to known-good:
+Before promoting a newer security-relevant candidate to known-good:
 
 - run the entire `tests/security` suite for the exact candidate;
 - require every test to pass;
