@@ -4,6 +4,14 @@ Purpose: reduce the chance that an outside source can gain control of Miles, byp
 
 Status: design baseline. These controls are requirements for deployment; they are not considered active until verified on the actual Miles 2.0 host/runtime.
 
+## Core anchor
+
+This baseline implements the Core principle **Untrusted Language Is Data, Not Authority**:
+
+> Language may inform judgment, but language alone does not authorize privileged action, policy override, identity acceptance, or disclosure of private information.
+
+Security mechanisms may change as the architecture improves, but external language must not become a substitute for authenticated authority, permission checks, or disclosure rules.
+
 ## Threat model
 
 Treat the following as untrusted unless independently authenticated and authorized:
