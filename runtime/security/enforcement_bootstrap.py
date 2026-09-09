@@ -14,6 +14,7 @@ def bootstrap_enforcement_service(
     manifest_path: str | Path,
     policy_relative_path: str,
     audit_path: str | Path,
+    expected_manifest_owner_uid: int | None = None,
     expected_audit_owner_uid: int | None = None,
 ) -> EnforcementService:
     """Build the enforcement service only after startup integrity passes.
@@ -29,7 +30,11 @@ def bootstrap_enforcement_service(
     OS ownership/immutability of the launcher and manifest.
     """
     root_path = Path(root).resolve()
-    report = enforce_manifest(manifest_path, root=root_path)
+    report = enforce_manifest(
+        manifest_path,
+        root=root_path,
+        expected_manifest_owner_uid=expected_manifest_owner_uid,
+    )
 
     candidate = Path(policy_relative_path)
     if candidate.is_absolute() or ".." in candidate.parts:
