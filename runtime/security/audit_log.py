@@ -153,6 +153,11 @@ class SecureAuditWriter:
             os.close(fd)
             raise
 
+    def verify_ready(self) -> None:
+        """Fail closed at startup if the protected audit sink is unsafe."""
+        fd = self._open_append()
+        os.close(fd)
+
     def append(self, record: AuditRecord) -> dict[str, Any]:
         payload = (
             json.dumps(
