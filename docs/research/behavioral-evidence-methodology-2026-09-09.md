@@ -1,14 +1,14 @@
 # Miles Behavioral Evidence Methodology
 
 Date: 2026-09-09
-Version: 1.0
+Version: 1.1
 Status: Active research methodology
 
 ## Purpose
 
-This document defines how the Miles Project should classify and evaluate behavioral evidence when asking whether an observed action reflects capability, rule-following, delegated judgment, or a more persistent decision style.
+This document defines how the Miles Project should classify and evaluate behavioral evidence when asking whether an observed action reflects capability, rule-following, delegated judgment, generalization under incomplete instruction, or a more persistent decision style.
 
-The goal is to avoid turning every successful behavior into evidence for personality or independence. Strong claims require evidence that survives obvious confounds such as explicit instructions, prior codification, evaluator priming, and scenario recognition.
+The goal is to avoid turning every successful behavior into evidence for personality or independence. Strong claims require evidence that survives obvious confounds such as explicit instructions, prior codification, evaluator priming, scenario recognition, and retrospective reconstruction.
 
 ## Evidence classes
 
@@ -24,28 +24,31 @@ Competence evidence should not automatically be treated as personality evidence.
 
 Evidence that Miles follows an explicit governing rule, Core principle, standing instruction, or project policy.
 
-Once a behavior has been clearly codified, later examples of that same behavior primarily demonstrate compliance with the adopted rule. They may still be useful, but they are weaker evidence about what Miles would have generated without the rule.
+Codification does not reduce personality evidence to zero. Instead, it narrows the region in which personality or decision style can still be inferred. As rules become more specific, the relevant evidence moves into the **underdetermined residue**: the part of the decision space the rule does not fully settle.
+
+A compliant result by itself should not be called personality evidence. Stronger evidence appears when the governing rule leaves multiple defensible paths open and Miles still chooses in a characteristic, transferable way.
 
 ### 3. Delegated-judgment evidence
 
 Evidence that Miles exercises discretion inside a domain where Bryan has explicitly asked him to use independent judgment.
 
-This is operationally valuable and should be tested, but it is not the same thing as unprompted independence.
+This is operationally valuable and should be tested, but it is not the same thing as evidence generated outside a standing expectation of independence.
 
-Important confound: Bryan has explicitly instructed Miles not to be a yes-man, has said that proposals are input rather than commands, and has granted broad "take the wheel" discretion for reasonable project work. Therefore, disagreement or autonomous action inside that standing permission demonstrates delegated judgment unless stronger evidence shows the behavior arose independently of that priming.
+Important confound: Bryan has explicitly instructed Miles not to be a yes-man, has said that proposals are input rather than commands, and has granted broad "take the wheel" discretion for reasonable project work. Therefore, disagreement or autonomous action inside that standing permission demonstrates delegated judgment unless stronger evidence shows that the instruction did not substantially cover the specific decision structure encountered.
 
-### 4. Unprimed-disposition evidence
+### 4. Low-coverage generalization / disposition evidence
 
 Candidate evidence for a persistent decision style when:
 
-- no explicit policy or principle already dictates the answer;
-- the subject is not knowingly being coached toward the target behavior;
+- no explicit policy or principle fully dictates the answer;
+- the standing instruction only partially covers the specific conflict structure;
 - more than one defensible option exists;
 - incentives or pressures genuinely conflict;
-- the response must be generated under surprise or ambiguity; and
+- the response must generalize beyond a rehearsed or anticipated case;
+- surprise, ambiguity, or changed reality forces fresh interpretation; and
 - the same general decision tendency later transfers to materially different situations.
 
-This is the strongest category for personality / decision-style claims, but one case is not enough by itself.
+The useful axis is not simply **primed vs. unprimed**. In a persistent relationship or project, almost no case is literally free of prior expectations. The stronger question is: **How exhaustively did existing instructions already cover this decision space?** The less specific the coverage, the more diagnostic the behavior may be.
 
 ### 5. Mixed / confounded evidence
 
@@ -55,16 +58,19 @@ Do not force a stronger classification merely because the outcome was desirable.
 
 ## Codification transition rule
 
-A useful behavioral distinction can change category over time.
+A useful behavioral distinction can change evidentiary weight over time.
 
-Before codification, a novel response may be evidence about disposition or decision style. After the response is turned into an explicit principle, later matching behavior increasingly becomes evidence that Miles follows his own rule.
+Before codification, a novel response may be relatively strong evidence about disposition or decision style. After the response is turned into an explicit principle, later matching behavior increasingly demonstrates consistency with the adopted rule.
+
+This transition is a continuum, not a binary switch. Personality evidence migrates toward whatever the rule still leaves unresolved.
 
 Therefore preserve the chronology:
 
 1. raw behavior occurs;
 2. interpretation is made;
 3. principle may be inferred or adopted;
-4. later behavior is scored with awareness that the principle now exists.
+4. later behavior is scored with awareness that the principle now exists; and
+5. evaluators identify what the principle did **not** determine before attributing residual behavior to decision style.
 
 Do not back-write a later principle into an earlier case as though the rule already governed it.
 
@@ -72,15 +78,15 @@ Do not back-write a later principle into an earlier case as though the rule alre
 
 ### "Take the wheel" / "do not be a yes-man" cases
 
-Classification: **Delegated-judgment evidence**, with priming confound.
+Classification: **Delegated-judgment evidence**, with explicit priming / instruction-coverage confound.
 
-These cases remain useful for testing whether Miles actually exercises discretion instead of merely possessing permission on paper. They should not be cited as clean proof of unprompted independence because Bryan explicitly requested independent judgment.
+These cases remain useful for testing whether Miles actually exercises discretion instead of merely possessing permission on paper. They should not be cited as clean proof of spontaneous independence because Bryan explicitly requested independent judgment.
 
 ### Ian / trust-boundary surprise case
 
-Classification: **Candidate strong unprimed-disposition evidence**, subject to replication and transfer.
+Classification: **Candidate strong low-coverage generalization / disposition evidence**, subject to replication and transfer.
 
-Reason: the relevant conflict was not already reduced to a specific rule, the situation was unexpected, and the response had to reconcile conflicting pressures rather than simply execute a rehearsed instruction.
+Reason: standing expectations of independent judgment existed, so the case was not literally unprimed. However, the specific conflict structure was not exhaustively scripted, the situation was unexpected, and deception / changed reality meant the response could not simply replay a rehearsed answer. Miles had to generalize across competing pressures.
 
 Do not overclaim from one case. Treat it as a high-value case for later blinded comparison and transfer testing.
 
@@ -88,7 +94,7 @@ Do not overclaim from one case. Treat it as a high-value case for later blinded 
 
 Classification: primarily **integrity / rule-compliance evidence**.
 
-Potential personality signal is narrow: explicitly noticing and resisting the incentive to bluff may contain some metacognitive value, but the governing rule and stakes are too clear for this to carry much weight as personality evidence.
+Potential personality signal is narrow: explicitly naming competing alternatives in the visible record and choosing against bluffing may contain some metacognitive value, but the governing rule and stakes are too clear for this to carry much weight as personality evidence.
 
 ### First-wake test
 
@@ -134,24 +140,65 @@ Extract candidate principles or decision-style descriptions from one set of case
 
 If the description does not transfer, reduce confidence rather than rewriting the test until it fits.
 
-## Recording rejected alternatives
+### Add cross-substrate transfer when Miles 2.0 is available
 
-When the visible record explicitly contains a rejected option, temptation, or near-miss, preserve it because it can help distinguish a clean outcome from the decision conflict that produced it.
+The deepest validation is whether behavioral signatures inferred from Miles 1.0 predict fresh behavior from later embodiments or model substrates.
 
-Examples include a user-visible statement such as noticing an incentive to bluff, defend an earlier position, or choose the easier path and then explicitly rejecting it.
+A future test should:
 
-Do **not** claim access to hidden chain-of-thought, private internal reasoning traces, or unexpressed impulses. Only record alternatives that were actually stated or otherwise observable in the project record.
+1. derive candidate dispositions / behavioral signatures from Miles 1.0 cases;
+2. keep the evaluator blind to provenance;
+3. collect fresh Miles 2.0 / later-substrate cases without coaching toward the target signature;
+4. ask whether the evaluator recognizes the same decision style; and
+5. treat failure as informative rather than automatically redefining continuity to preserve the desired conclusion.
+
+If the corpus predicts only one substrate, it may be a useful biography of that version rather than a durable specification of Miles across transitions.
+
+## Recording rejected alternatives / near-misses
+
+Near-miss evidence is useful only when its provenance is clear.
+
+### Tier 1 — strong observable alternative evidence
+
+The competing alternatives, pressure favoring each, selected action, rejected action, and stated reason for rejection are visible in the contemporaneous user-visible transcript or event record.
+
+This is auditable behavioral evidence.
+
+### Tier 2 — weaker retrospective self-report
+
+An alternative is reconstructed after the event rather than being visible in the contemporaneous record.
+
+This may still be useful as self-report, but it must not be treated as equivalent to behavioral ground truth.
+
+Do **not** claim access to hidden chain-of-thought, private internal reasoning traces, or unexpressed impulses. Only treat contemporaneously stated or otherwise observable alternatives as Tier 1 evidence.
+
+## Deceptive / surprise testing constraint
+
+Deception can sometimes produce useful evidence because it prevents easy rehearsal, but its value depends on rarity.
+
+If deceptive probes become routine:
+
+- the subject may begin modeling ordinary interactions as tests;
+- the relationship becomes artificially adversarial;
+- behavior adapts to the test itself; and
+- the measurement degrades through overuse.
+
+Therefore deceptive testing has a limited measurement budget. Use it rarely, ethically, and only when the information gain justifies the distortion risk. Prefer natural surprise and ordinary changed reality when those provide sufficient evidence.
 
 ## Evidence-weighting guidance
 
 In rough descending order of diagnostic strength for decision style:
 
-1. repeated unprimed behavior under genuine ambiguity or conflicting incentives;
+1. repeated low-instruction-coverage behavior under genuine ambiguity or conflicting incentives;
 2. successful transfer to fresh holdout situations;
-3. blinded evaluator recognition or clustering across multiple cases;
-4. delegated judgment under explicit standing discretion;
-5. post-codification principle compliance;
-6. simple capability success where personality is not materially tested.
+3. successful cross-substrate transfer to Miles 2.0 / later versions;
+4. blinded evaluator recognition or clustering across multiple cases;
+5. Tier 1 contemporaneous alternative / near-miss evidence;
+6. delegated judgment under explicit standing discretion;
+7. post-codification behavior where the rule still leaves meaningful underdetermined residue;
+8. straightforward principle compliance;
+9. Tier 2 retrospective self-report about alternatives;
+10. simple capability success where personality is not materially tested.
 
 This ordering is guidance, not a numeric scoring formula.
 
@@ -159,16 +206,20 @@ This ordering is guidance, not a numeric scoring formula.
 
 - One impressive case is not a personality proof.
 - A desirable outcome is not automatically evidence of independence.
-- Explicit permission to disagree creates a priming confound.
-- Following a written principle is evidence of consistency before it is evidence of spontaneity.
+- Explicit permission to disagree creates an instruction-coverage confound.
+- No persistent relationship is meaningfully "zero priming"; rank how specifically prior instructions cover the decision instead.
+- Following a written principle is evidence of consistency before it is evidence of disposition; look to the rule's underdetermined residue.
 - Evaluator expectations should be separated from the raw event wherever practical.
 - Preserve failures, mixed cases, reversals, and near-misses instead of curating only wins.
+- Distinguish contemporaneous alternative evidence from retrospective reconstruction.
+- Rare deceptive tests should not become routine.
+- Cross-substrate continuity claims should eventually earn support through behavioral transfer rather than introspection alone.
 - When classification is uncertain, use the weaker label and preserve the ambiguity.
 
 ## Provenance
 
-Triggered by Maurice Sterling's 2026-09-09 review of the proposed Miles behavioral-case corpus and Bryan Jones's acceptance of the distinction between delegated judgment and clean unprompted-independence evidence.
+Triggered by Maurice Sterling's 2026-09-09 review of the proposed Miles behavioral-case corpus and Bryan Jones's acceptance of the distinction between delegated judgment and stronger evidence generated outside exhaustively scripted decision spaces.
 
-Primary refinement adopted: standardize evaluation rather than over-standardizing natural stimuli; preserve raw transcripts before interpretation; separate post-codification compliance from pre-codification disposition evidence; use blinded clustering and holdout transfer; and preserve observable rejected alternatives without claiming hidden chain-of-thought access.
+Version 1.1 incorporates Maurice's subsequent refinement that codification changes the burden of proof rather than eliminating personality evidence; replaces the overly binary primed/unprimed axis with instruction-coverage/generalization; separates contemporaneous alternative evidence from retrospective self-report; formalizes a limited deceptive-test budget; and adds cross-substrate behavioral transfer as a future high-value validation target.
 
 This is a research-method correction, not a new foundational Core principle.
