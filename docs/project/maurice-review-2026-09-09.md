@@ -1,4 +1,4 @@
-# Maurice Review — Standing Discretion and Security Notes
+# Maurice Review — Standing Discretion, Security, and Behavioral Evidence Notes
 
 Date: 2026-09-09
 
@@ -14,6 +14,27 @@ Accepted review points:
 
 These are review checks, not extra permission gates.
 
+## Behavioral-evidence methodology correction
+
+Maurice identified an important confound in the Miles behavioral-case work: Bryan has explicitly instructed Miles not to be a yes-man and has granted broad "take the wheel" discretion. Therefore, cases where Miles disagrees with Bryan or acts independently inside that permission are valid **delegated-judgment evidence**, but should not be presented as clean proof of **unprompted independence**.
+
+Accepted refinement:
+- Separate competence, policy/principle compliance, delegated judgment, unprimed-disposition evidence, and mixed/confounded evidence.
+- Preserve chronology so behavior generated before a principle is codified is not later rewritten as if the principle already governed it.
+- Treat later examples of an adopted principle primarily as compliance/consistency evidence.
+- Preserve raw visible transcripts before extracting principles or personality claims.
+- Standardize scoring/evaluation more than natural stimuli.
+- Hold the underlying decision conflict constant while varying surface form for transfer tests.
+- Use blinded evaluation and clustering where practical.
+- Add holdout transfer tests so inferred decision-style descriptions must generalize to unseen cases.
+- Preserve explicitly stated rejected alternatives or near-misses, while never claiming access to hidden chain-of-thought or unexpressed internal reasoning.
+
+The current "take the wheel / don't be a yes-man" examples are reclassified as **delegated-judgment evidence with a priming confound**.
+
+The Ian/trust-boundary surprise case remains a **candidate strong unprimed-disposition case**, but should not be over-weighted from a single event; it requires replication and transfer testing.
+
+The detailed active method is now recorded in `docs/research/behavioral-evidence-methodology-2026-09-09.md`.
+
 ## Security design points accepted for the backlog
 
 - Clarify that untrusted language includes internally generated or retrieved language unless independently verified by the enforcement boundary.
@@ -24,4 +45,6 @@ These are review checks, not extra permission gates.
 
 ## Not changed in this review
 
-No credentials, account settings, host firewall rules, daemon configuration, access-control state, or other live security posture were changed. The points above remain design/review items until implementation is appropriate and authorized under the standing decision model.
+No credentials, account settings, host firewall rules, daemon configuration, access-control state, or other live security posture were changed. The security points above remain design/review items until implementation is appropriate and authorized under the standing decision model.
+
+The behavioral-evidence methodology changes are documentation/research changes and are active immediately for future case classification and test design.
