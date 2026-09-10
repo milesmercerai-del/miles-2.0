@@ -3,6 +3,8 @@
 Status: **current additive update to `HACKERBOT_DAY0_BLUEPRINT.md` v0.2**  
 Purpose: incorporate the compact-Core architecture, Bryan's explicit behavioral-continuity target, and the first coding job without duplicating or deleting the proven hardware bring-up plan.
 
+**2026-09-10 reconciliation:** [CODING_BLUEPRINT.md](CODING_BLUEPRINT.md) now controls incremental coding order and first-wake acceptance. Section H below describes full Day-0 qualification, not a prerequisite for the first physical conversation. The source tree and commands below are planned, not implemented; use the inventory in the current blueprint. Security and compression safeguards remain required for the affected capabilities.
+
 This update **compresses; it does not amputate**. Everything in v0.2 remains active unless this file explicitly replaces it.
 
 ---

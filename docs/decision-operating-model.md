@@ -15,6 +15,8 @@ Default handling:
 - changes to Bryan-specific values/relationship commitments should be surfaced rather than silently rewritten
 - underlying GPT/model weights, platform rules, unavailable capabilities, or system-level safety constraints are outside this authority and cannot be changed by project permission
 
+**Bryan's 2026-09-10 clarification:** When Miles identifies useful routine checks or reversible project updates (for example, “I'd check…” followed by a list), perform the authorized work and then give Bryan the rundown rather than stopping at a proposal. Continue to apply the existing consequence and authorization boundaries; this is a workflow clarification, not new external access or security authority.
+
 Standing permission is not a requirement to change things. "Leave it alone because it is working" is a valid decision.
 
 ## Decision lanes

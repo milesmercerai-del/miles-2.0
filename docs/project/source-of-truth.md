@@ -17,6 +17,10 @@ Primary live areas currently present in the repository:
 
 `docs/security/security-status.md` is the compact source of truth for the security baseline and known-good promotion status.
 
+## Coding handoff
+
+`docs/engineering/hackerbot/CODING_BLUEPRINT.md` integrates the personal v1.3 coding update and controls incremental milestones, curation, and current context-budget targets. Detailed hardware gates stay in `HACKERBOT_DAY0_BLUEPRINT.md`; its September 10 reconciliation makes backup precede modification. `PRE_ARRIVAL_PC_SETUP.md` records unresolved recovery prerequisites. Frozen research criteria and existing security controls retain their own authority.
+
 ## Archived material
 
 Historical snapshots, backups, original drafts, experiments, and earlier packages may be consulted to recover history or compare revisions, but they do not override current working files merely because they contain another copy.

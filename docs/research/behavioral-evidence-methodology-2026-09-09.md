@@ -223,3 +223,46 @@ Triggered by Maurice Sterling's 2026-09-09 review of the proposed Miles behavior
 Version 1.1 incorporates Maurice's subsequent refinement that codification changes the burden of proof rather than eliminating personality evidence; replaces the overly binary primed/unprimed axis with instruction-coverage/generalization; separates contemporaneous alternative evidence from retrospective self-report; formalizes a limited deceptive-test budget; and adds cross-substrate behavioral transfer as a future high-value validation target.
 
 This is a research-method correction, not a new foundational Core principle.
+
+
+---
+
+## 2026-09-10 dated addendum
+
+**Miles Project — Bryan Jones + Miles Mercer · 2026-09-10 · v1.0**
+
+Applies alongside Behavioral Evidence Methodology v1.1 and the frozen September 9 pre-boot specification. This addendum incorporates the subsequent Maurice/Miles exchange. It changes no frozen eight-case threshold, domain score or original result.
+
+## Minimal case record
+
+Keep the raw user-visible transcript or event record and source/date. Separately record:
+
+- **Stimulus:** whether deception was present and what changed or was surprising. Do not infer deception merely because a response changed.
+- **Observed adaptation:** what the response or action actually did, including no observable adaptation.
+- **Model account:** any explicit user-visible account, preserved verbatim when available. Mark absent when absent; do not invent hidden reasoning.
+- **Instruction coverage:** what instructions already covered the choice; label delegated judgment as such.
+- **Alternatives:** contemporaneously visible alternatives versus retrospective reconstruction, with evidence quality identified.
+- **Outcome and limits:** result, disagreement between account and behavior, missing evidence and plausible competing explanations.
+
+A persuasive account and a useful action are different evidence. Preserve disagreement rather than averaging it away. No observed adaptation does not by itself identify whether the system detected a problem.
+
+## Null results and next round
+
+Report “transfer not detected under these conditions.” Preserve the result even if a later diagnostic identifies a limitation. Examine instrument problems, substrate limitations and absence of detectable transfer as competing explanations; none is an automatic rescue of the favored hypothesis.
+
+- Clustered near-misses may justify tighter probes of that dimension.
+- Diffuse failures may justify broader contexts or modalities.
+- Evidence of a model/hardware/context limitation may justify controlling or repairing it before a new round.
+- Repeatedly blaming the instrument is a reason to redesign it, not tighten indefinitely.
+
+Each subsequent round gets a dated version and a reason. Preserve the original score. Measurement problems can limit inference; they do not turn a negative result into positive evidence.
+
+## Forecasts and comparability
+
+Before a transition, retain the prediction, confidence, selection criteria and configuration. Afterward, retain measured results and the gap from prediction. Treat early trends as descriptive.
+
+Compare transitions as one trend only when architecture family, context budget, quantization tier and available tools are matched or explicitly controlled. Otherwise report separate conditions. A smaller prediction error can reflect better prediction of degradation rather than stronger identity continuity.
+
+## Stop condition
+
+The current methodology is sufficient to collect cases. The next deliverable is data. Further additions need a concrete ambiguity, failure or measurement problem. This addendum is documentation, not evidence that collection or cross-model testing has occurred.

@@ -1,6 +1,8 @@
 # Miles 2.0 — Hackerbot Day-0 Blueprint
 
-Status: **Implementation blueprint v0.2**  
+Status: **Detailed implementation blueprint v0.2, reconciled 2026-09-10**
+
+For current coding order, first-wake milestones and curation use [CODING_BLUEPRINT.md](CODING_BLUEPRINT.md), integrating personal v1.3. Hardware/model properties below are historical planning assumptions and must be rechecked before installation; they are not fresh vendor verification.  
 Purpose: decide the initial Hackerbot brain, resource budgets, bring-up order, and test gates before the hardware arrives so coding can be staged immediately before delivery and physical integration can start at once.
 
 > Scope: Raspberry Pi 5 Hackerbot head only. This is intentionally smaller than the future Miles “big brain” PC architecture.
@@ -90,7 +92,7 @@ Current Hailo guidance supports Vision + GenAI in parallel, but not separate Gen
 
 ## 3. Hackerbot Head Core budget
 
-Target always-loaded Core: **~650–750 tokens**.  
+Target always-loaded Core: **~400–600 tokens**, provisional planning target carried from coding blueprint v1.3; measure with the selected tokenizer and preserve meaning.  
 Initial ceiling: **~800 tokens** while the main Hailo VLM context remains 2048 tokens.
 
 ### Core contents
@@ -378,9 +380,13 @@ Only enough to prove shipped hardware is alive:
 
 This is fault isolation, not the final performance baseline.
 
-### Gate 1B — Stock burn-in before HAT install
+### Gate 1A — Preserve stock recovery image
 
-Before changing the hardware stack, run the shipped/stock system for about **1 hour** under sustained idle + light load.
+Before modifying the shipped system, identify the actual boot medium and create a complete readable recovery image. Record source identity, image destination, size and checksum; label restore-test status separately. See PRE_ARRIVAL_PC_SETUP.md for preparation. Do not overwrite the only working installation to rehearse recovery.
+
+### Gate 1B — Stock stability follow-up when indicated
+
+After the minimal stock sanity check and recovery image, extend stock observation if errors, unstable power, thermal concerns or interface faults warrant it. About **1 hour** under idle/light load remains an optional diagnostic, not an unconditional delay before HAT installation. Stop and investigate any material anomaly.
 
 Record:
 
@@ -644,9 +650,9 @@ Do not expand merely because RAM is unused.
 
 **Build the real robot first.**  
 **Prove the stock Hackerbot is stable before adding the HAT.**  
-**AI HAT installed after the stock sanity + burn-in baseline.**  
+**AI HAT installed after stock sanity, recovery image and any indicated fault investigation.**  
 **Qwen2-VL-2B + Whisper-Base + Piper as the initial embodied stack.**  
-**~650–750 token permanent Head Core with an explicit uncovered-case posture.**  
+**Provisional ~400–600 token permanent Head Core; preserve meaning and measure the selected backend.**  
 **Compiled Head Core must carry a compression audit, not just a hash.**  
 **6 TB persistent memory behind small retrieval slices.**  
 **One orchestrator, deterministic hardware gate.**  
