@@ -19,11 +19,13 @@ Primary live areas currently present in the repository:
 
 ## Coding handoff
 
-`docs/engineering/hackerbot/CODING_BLUEPRINT.md` integrates the personal v1.3 coding update and controls incremental milestones, curation, and current context-budget targets. Detailed hardware gates stay in `HACKERBOT_DAY0_BLUEPRINT.md`; its September 10 reconciliation makes backup precede modification. `PRE_ARRIVAL_PC_SETUP.md` records unresolved recovery prerequisites. Frozen research criteria and existing security controls retain their own authority.
+`docs/engineering/hackerbot/CODING_BLUEPRINT.md` integrates the current personal coding update and controls incremental milestones, curation, and current context-budget targets. Detailed hardware gates stay in `HACKERBOT_DAY0_BLUEPRINT.md`; its September 10 reconciliation makes backup precede modification. `HAT_RECOVERY_PLAN.md` adds the pre-HAT failure/recovery path. `PRE_ARRIVAL_PC_SETUP.md` records unresolved recovery prerequisites. Frozen research criteria and existing security controls retain their own authority.
 
 ## Archived material
 
 Historical snapshots, backups, original drafts, experiments, and earlier packages may be consulted to recover history or compare revisions, but they do not override current working files merely because they contain another copy.
+
+When active material references a prior decision without restating it and the Archive contains the only surviving copy, the archived copy may supply missing historical context or evidence of intent. It does **not** regain authority over current policy. Record the archive source when using it this way, and resolve any actual conflict in favor of the current active material unless Bryan explicitly reopens the decision.
 
 ## Authority rule
 
