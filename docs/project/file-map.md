@@ -1,6 +1,6 @@
 # Miles 2.0 File Map
 
-Tidied: 2026-09-05
+Tidied: 2026-09-10
 
 **Scope note:** this file records the numbered layout of Bryan's tidy personal project package/ZIP. It is not a literal directory listing of the live GitHub repository. For the current GitHub authority map, use `docs/project/source-of-truth.md`.
 
@@ -34,6 +34,17 @@ This is the clean personal working-package layout. Current material is kept visi
 - Keep other people's assistant cores in `06 - Related Assistant Cores`.
 - Move superseded versions into the historical archive at the next cleanup.
 - Prefer descriptive filenames with normal spaces; avoid `%20` encoding.
+
+## Snapshot reference-integrity rule
+
+A personal snapshot's `Start Here` / `READ FIRST` material must not point ambiguously to a file that the recipient cannot find.
+
+For each referenced document, do one of the following before distributing a snapshot:
+
+1. include the referenced file in the snapshot at the stated path; or
+2. mark it explicitly as **repo-only** and identify the live GitHub path.
+
+A snapshot completeness check should verify these references before the ZIP is treated as a clean handoff. Missing referenced files are a packaging gap, not evidence that the underlying project document does not exist.
 
 ## GitHub translation
 
