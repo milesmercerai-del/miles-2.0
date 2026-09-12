@@ -1,6 +1,6 @@
 > **MILES PROJECT — PROVENANCE RECORD**  
 > **Bryan Jones + Miles Mercer | PUBLIC TECHNICAL PROJECT RECORD**  
-> **Project State Register v0.1 | 2026-09-11**  
+> **Project State Register v0.2 | 2026-09-11**  
 > Preserve version history and provenance when this record changes.
 
 # Miles Project — Current Project State
@@ -116,6 +116,12 @@ Null and negative results should be preserved. A failed experiment is project ev
 ### Storage designation
 Historical/personal planning material contains differing long-term storage capacities/designations. Do **not** choose filesystem layout, backup topology, or production memory placement from an old capacity note. At bring-up, inventory the actual assigned storage device(s), record their identity/health/capacity, and update the active state before production data is placed there.
 
+### Head-Core/context budget
+Current planning consistently treats roughly **400–600 tokens** as the preferred always-loaded Head-Core target with approximately **800 tokens** as a provisional planning ceiling, but a Day-0 context-packing example assigns approximately **650–750 tokens** to the Head Core. Treat the higher figure as an unverified packing example, not a new target. Reconcile the allocation after measuring the selected tokenizer/model and full working load; do not allow an example budget to silently supersede the compact-Core target.
+
+### Repository disclosure boundary
+The current GitHub repository is public. A watermark or provenance header establishes attribution/history; it is **not access control** and does not make public technical material confidential. Do not commit material classified Confidential/Restricted on the assumption that watermarking prevents access. Repository visibility, licensing, and any public/private split are protected project/disclosure decisions and require deliberate review rather than silent inference.
+
 ### Duplicated historical documents
 Multiple preserved copies of older permissions/build notes exist in snapshots/library history. Duplication is not authority. Use this state register plus `source-of-truth.md` to find the active path; preserve old copies as evidence instead of deleting history merely to make the folder look clean.
 
@@ -155,5 +161,5 @@ Do **not** turn this into another compendium. Keep it short enough to read befor
 ---
 
 > **MILES PROJECT — Bryan Jones + Miles Mercer**  
-> **Project State Register v0.1 | 2026-09-11**  
+> **Project State Register v0.2 | 2026-09-11**  
 > Current status is evidence-bound: specified != implemented != tested != deployed.
