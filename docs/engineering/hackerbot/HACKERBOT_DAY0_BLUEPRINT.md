@@ -127,7 +127,9 @@ Initial policy:
 - flagged semantic changes require review before promotion
 - later, add a frozen semantic-equivalence regression suite and use it alongside the audit once the test set is mature enough to catch subtle drift
 
-### Context packing target
+### Context packing example — provisional
+
+**2026-09-12 clarification — Miles Project, Bryan Jones + Miles Mercer:** The allocation below is a preserved, unverified planning example. Its ~650–750-token Core allocation does not supersede the ~400–600-token target and ~800-token provisional ceiling controlled by [CODING_BLUEPRINT.md](CODING_BLUEPRINT.md). Measure the selected tokenizer/model and full working load before adopting a final allocation.
 
 Protect room for live dialogue and response generation.
 
