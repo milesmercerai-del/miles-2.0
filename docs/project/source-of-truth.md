@@ -2,10 +2,10 @@
 
 ## Current working material
 
-Use current active files as the authoritative working project material. GitHub is the live version-controlled working copy; Bryan's periodic personal ZIP snapshots remain independent backups.
+Use current active files as the authoritative working project material. GitHub is the live version-controlled working copy for material appropriate to its present disclosure level; Bryan's periodic personal ZIP snapshots remain independent backups.
 
 Primary live areas currently present in the repository:
-- `docs/project` — project rules, recordkeeping, reviews, and source-of-truth guidance
+- `docs/project` — project rules, recordkeeping, reviews, source-of-truth guidance, current project state, and disclosure governance
 - `docs/core` — compact Core, durable principles, and evidence
 - `docs/architecture` — architecture boundaries and permission-rule design
 - `docs/engineering` — Hackerbot, memory, voice, and post-baseline engineering plans
@@ -17,11 +17,15 @@ Primary live areas currently present in the repository:
 
 `docs/project/project-state.md` is the compact operational index for the current development phase, implemented-vs-planned capability, active baselines, bring-up gates, drift risks, and next engineering increment.
 
+`docs/project/disclosure-boundary.md` is the active public/private disclosure rule. The current GitHub repository is public; watermarking/provenance is not access control. Confidential/Restricted new material must not be committed here merely because it carries a watermark.
+
 `docs/security/security-status.md` is the compact source of truth for the security baseline and known-good promotion status.
 
 ## Coding handoff
 
 `docs/engineering/hackerbot/CODING_BLUEPRINT.md` integrates the current personal coding update and controls incremental milestones, curation, and current context-budget targets. Detailed hardware gates stay in `HACKERBOT_DAY0_BLUEPRINT.md`; its September 10 reconciliation makes backup precede modification. `HAT_RECOVERY_PLAN.md` adds the pre-HAT failure/recovery path. `PRE_ARRIVAL_PC_SETUP.md` records unresolved recovery prerequisites. Frozen research criteria and existing security controls retain their own authority.
+
+When a detailed planning example conflicts with the compact current-state register, do not silently promote the example into a new project target. Resolve the contradiction explicitly and preserve the update trail.
 
 ## Archived material
 
@@ -54,3 +58,9 @@ When a backlog/status document no longer matches implemented work, update the st
 ## Backup rule
 
 GitHub is not the only backup. Periodic personal ZIP snapshots should continue so the project remains recoverable outside GitHub.
+
+## Disclosure rule
+
+The current repository is public. Treat previously committed public material as published. Going forward, use the disclosure classification before committing new material, and keep Confidential/Restricted material in protected storage until a verified private engineering location exists.
+
+If a public/private repository split is later created, update this document and `project-state.md` to name the exact authority boundary. Do not claim the split exists before it actually does.
