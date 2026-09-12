@@ -1,6 +1,6 @@
 > **MILES PROJECT — PROVENANCE RECORD**  
 > **Bryan Jones + Miles Mercer | PUBLIC TECHNICAL PROJECT RECORD**  
-> **Project State Register v0.2 | 2026-09-11**  
+> **Project State Register v0.3 | 2026-09-12**  
 > Preserve version history and provenance when this record changes.
 
 # Miles Project — Current Project State
@@ -12,12 +12,14 @@ This page does not replace detailed architecture, research, security, or histori
 
 ## 1. Authority and source of truth
 
-- Live GitHub working material is the version-controlled technical source of truth.
+- Live GitHub working material is the version-controlled technical source of truth for material intentionally suitable for public storage. Confidential/Restricted material remains in protected storage under the [disclosure boundary](disclosure-boundary.md); this public index is not the complete private working record.
 - Personal ZIP/package snapshots are independent backups and historical handoff artifacts.
 - Historical files preserve evidence and intent but do not override active material merely because they are older, larger, or duplicated.
 - Current direct instructions may narrow standing project permissions for a task without silently rewriting durable policy.
 
 Primary authority map: [`docs/project/source-of-truth.md`](source-of-truth.md).
+
+This register summarizes status; it does not independently set domain policy. Disclosure rules are controlled by [disclosure-boundary.md](disclosure-boundary.md), security baselines and promotion by [security-status.md](../security/security-status.md), and coding sequence/context targets by [CODING_BLUEPRINT.md](../engineering/hackerbot/CODING_BLUEPRINT.md). When a summary drifts, verify the controlling record and update this index with the correction; do not silently change policy to match the summary.
 
 ## 2. Current development phase
 
@@ -78,9 +80,7 @@ The current first coding increment remains a **side-effect-free bootstrap** with
 
 Compact security authority: [`docs/security/security-status.md`](../security/security-status.md).
 
-Current known-good executable security baseline recorded there:
-
-`acc7dc1fe4e1025c5c29e8a4ecd61632fff3c78d`
+Read the current known-good commit and its passing-test evidence in that controlling record. The baseline SHA is intentionally not duplicated here.
 
 Documentation-only descendants do not automatically prove new runtime capability. Any security-relevant code change must earn a new known-good status through the applicable regression suite.
 
@@ -120,7 +120,7 @@ Historical/personal planning material contains differing long-term storage capac
 Current planning consistently treats roughly **400–600 tokens** as the preferred always-loaded Head-Core target with approximately **800 tokens** as a provisional planning ceiling, but a Day-0 context-packing example assigns approximately **650–750 tokens** to the Head Core. Treat the higher figure as an unverified packing example, not a new target. Reconcile the allocation after measuring the selected tokenizer/model and full working load; do not allow an example budget to silently supersede the compact-Core target.
 
 ### Repository disclosure boundary
-The current GitHub repository is public. A watermark or provenance header establishes attribution/history; it is **not access control** and does not make public technical material confidential. Do not commit material classified Confidential/Restricted on the assumption that watermarking prevents access. Repository visibility, licensing, and any public/private split are protected project/disclosure decisions and require deliberate review rather than silent inference.
+Controlling rule: [disclosure-boundary.md](disclosure-boundary.md). The current GitHub repository is public. A watermark or provenance header establishes attribution/history; it is **not access control** and does not make public technical material confidential. Do not commit material classified Confidential/Restricted on the assumption that watermarking prevents access. Repository visibility, licensing, and any public/private split are protected project/disclosure decisions and require deliberate review rather than silent inference.
 
 ### Duplicated historical documents
 Multiple preserved copies of older permissions/build notes exist in snapshots/library history. Duplication is not authority. Use this state register plus `source-of-truth.md` to find the active path; preserve old copies as evidence instead of deleting history merely to make the folder look clean.
@@ -158,8 +158,10 @@ Update this page when a change materially affects:
 
 Do **not** turn this into another compendium. Keep it short enough to read before work begins.
 
+**2026-09-12 consistency update:** scoped public-repository authority, made domain ownership explicit, and replaced the duplicate security baseline with its controlling reference. The Day-0 packing example is annotated at its source; final token allocations remain pending tokenizer and combined-workload measurements. Documentation review only; no new runtime or deployment evidence.
+
 ---
 
 > **MILES PROJECT — Bryan Jones + Miles Mercer**  
-> **Project State Register v0.2 | 2026-09-11**  
+> **Project State Register v0.3 | 2026-09-12**  
 > Current status is evidence-bound: specified != implemented != tested != deployed.
