@@ -15,6 +15,8 @@ Primary live areas currently present in the repository:
 - `tests` — executable regression tests
 - `.github/workflows` — automated repository checks
 
+`docs/project/project-state.md` is the compact operational index for the current development phase, implemented-vs-planned capability, active baselines, bring-up gates, drift risks, and next engineering increment.
+
 `docs/security/security-status.md` is the compact source of truth for the security baseline and known-good promotion status.
 
 ## Coding handoff
