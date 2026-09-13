@@ -1,14 +1,17 @@
-# Miles Project — Bryan Jones + Miles Mercer | Public technical code
-# Bootstrap regression tests v0.1 | 2026-09-13
+# Miles Project — Bryan Jones + Miles Mercer | 2026-09-13
 import hashlib
 import io
 import json
+from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 import subprocess
 import sys
 import tempfile
 import unittest
-from runtime.bootstrap import BootstrapError, load_core, run
+from types import SimpleNamespace
+from unittest.mock import patch
+from runtime.bootstrap import (BootstrapError, CANONICAL_CORE_SOURCE, Core, load_core,
+                               main, run, verify_core_compilation)
 
 
 class BootstrapTests(unittest.TestCase):
@@ -76,3 +79,41 @@ class BootstrapTests(unittest.TestCase):
                                  capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn('validation_passed', result.stdout)
+        self.assertIn('compiled_core_sha256', result.stdout)
+
+    def test_synthetic_core_does_not_invoke_miles_compiler(self):
+        core = load_core(self.config_path)
+        with patch('runtime.bootstrap._compile_canonical_core') as compiler:
+            self.assertIsNone(verify_core_compilation(core))
+        compiler.assert_not_called()
+
+    def test_canonical_core_requires_matching_compilation_provenance(self):
+        digest = 'a' * 64
+        core = Core('Canonical fixture', digest, CANONICAL_CORE_SOURCE, 'test')
+        good = SimpleNamespace(source_path=CANONICAL_CORE_SOURCE,
+                               source_sha256=digest, sha256='b' * 64)
+        with patch('runtime.bootstrap._compile_canonical_core', return_value=good):
+            self.assertEqual(verify_core_compilation(core), 'b' * 64)
+
+        bad = SimpleNamespace(source_path=CANONICAL_CORE_SOURCE,
+                              source_sha256='c' * 64, sha256='d' * 64)
+        with patch('runtime.bootstrap._compile_canonical_core', return_value=bad):
+            with self.assertRaises(BootstrapError):
+                verify_core_compilation(core)
+
+    def test_real_check_reports_compiled_digest_without_core_text(self):
+        out, err = io.StringIO(), io.StringIO()
+        with redirect_stdout(out), redirect_stderr(err):
+            code = main(['--check'])
+        self.assertEqual(code, 0, err.getvalue())
+        event = json.loads(out.getvalue())
+        self.assertEqual(event['event'], 'validation_passed')
+        self.assertEqual(event['core_sha256'],
+                         '8298ad9605666593cd23aea2e3eca98ade90dcb51cf1bb13fc4dea32b79e2972')
+        self.assertEqual(event['compiled_core_sha256'],
+                         '40b29fd8e7e1297bce6c95372dec23c4cb8178a2a7b3f256e1ca4bca255c56c3')
+        self.assertNotIn('Useful truth over comfortable agreement', out.getvalue())
+
+
+if __name__ == '__main__':
+    unittest.main()
