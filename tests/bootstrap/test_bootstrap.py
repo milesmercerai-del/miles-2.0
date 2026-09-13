@@ -12,6 +12,7 @@ from types import SimpleNamespace
 from unittest.mock import patch
 from runtime.bootstrap import (BootstrapError, CANONICAL_CORE_SOURCE, Core, load_core,
                                main, run, verify_core_compilation)
+from runtime.runtime_journal import JournalError, RuntimeJournal
 
 
 class BootstrapTests(unittest.TestCase):
@@ -22,6 +23,7 @@ class BootstrapTests(unittest.TestCase):
         self.core_path = self.root / 'core.md'
         self.core_path.write_bytes(b'Synthetic test Core.')
         self.config_path = self.root / 'config.json'
+        self.journal_path = self.root / 'runtime-journal.jsonl'
         self.config = dict(schema_version=1, adapter='mock', core_path='core.md',
                            core_sha256=hashlib.sha256(self.core_path.read_bytes()).hexdigest(),
                            core_source='synthetic fixture', core_version='test v1')
@@ -51,13 +53,19 @@ class BootstrapTests(unittest.TestCase):
                     load_core(self.config_path)
                 self.config[field] = old
 
-    def test_loop_quit_and_no_private_content_in_log(self):
+    def test_loop_quit_and_no_private_content_in_log_or_journal(self):
         output, log = io.StringIO(), io.StringIO()
-        run(load_core(self.config_path), io.StringIO('private input\n/quit\nignored\n'), output, log)
+        journal = RuntimeJournal(self.journal_path, fsync=False)
+        run(load_core(self.config_path), io.StringIO('private input\n/quit\nignored\n'),
+            output, log, journal=journal, session_id='synthetic-session')
         self.assertEqual(output.getvalue().count('[MOCK'), 1)
         self.assertNotIn('private input', log.getvalue())
         self.assertNotIn('Synthetic test Core', log.getvalue())
         self.assertIn('shutdown', log.getvalue())
+        journal_text = self.journal_path.read_text(encoding='utf-8')
+        self.assertNotIn('private input', journal_text)
+        self.assertNotIn('Synthetic test Core', journal_text)
+        self.assertEqual([record.event for record in journal.tail(10)], ['startup', 'shutdown'])
 
     def test_long_input_is_drained_then_next_turn_works(self):
         output, log = io.StringIO(), io.StringIO()
@@ -68,15 +76,17 @@ class BootstrapTests(unittest.TestCase):
     def test_cli_invalid_config_has_nonzero_exit_and_no_traceback(self):
         self.config_path.write_text('{broken')
         result = subprocess.run([sys.executable, '-m', 'runtime.bootstrap', '--config',
-                                 str(self.config_path)], capture_output=True, text=True)
+                                 str(self.config_path), '--journal', str(self.journal_path)],
+                                capture_output=True, text=True)
         self.assertEqual(result.returncode, 2)
         self.assertNotIn('Traceback', result.stderr)
         self.assertNotIn('boot_ready', result.stderr)
 
     def test_default_cli_works_from_other_directory(self):
         script = Path(__file__).resolve().parents[2] / 'runtime/bootstrap.py'
-        result = subprocess.run([sys.executable, str(script), '--check'], cwd=self.root,
-                                 capture_output=True, text=True)
+        result = subprocess.run([sys.executable, str(script), '--check', '--journal',
+                                 str(self.journal_path)], cwd=self.root,
+                                capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn('validation_passed', result.stdout)
         self.assertIn('compiled_core_sha256', result.stdout)
@@ -101,18 +111,34 @@ class BootstrapTests(unittest.TestCase):
             with self.assertRaises(BootstrapError):
                 verify_core_compilation(core)
 
-    def test_real_check_reports_compiled_digest_without_core_text(self):
+    def test_real_check_reports_compiled_digest_and_safe_journal(self):
         out, err = io.StringIO(), io.StringIO()
         with redirect_stdout(out), redirect_stderr(err):
-            code = main(['--check'])
+            code = main(['--check', '--journal', str(self.journal_path)])
         self.assertEqual(code, 0, err.getvalue())
-        event = json.loads(out.getvalue())
-        self.assertEqual(event['event'], 'validation_passed')
-        self.assertEqual(event['core_sha256'],
+        event_value = json.loads(out.getvalue())
+        self.assertEqual(event_value['event'], 'validation_passed')
+        self.assertEqual(event_value['core_sha256'],
                          '8298ad9605666593cd23aea2e3eca98ade90dcb51cf1bb13fc4dea32b79e2972')
-        self.assertEqual(event['compiled_core_sha256'],
+        self.assertEqual(event_value['compiled_core_sha256'],
                          '40b29fd8e7e1297bce6c95372dec23c4cb8178a2a7b3f256e1ca4bca255c56c3')
         self.assertNotIn('Useful truth over comfortable agreement', out.getvalue())
+        records = RuntimeJournal(self.journal_path).tail(10)
+        self.assertEqual(len(records), 1)
+        self.assertEqual(records[0].event, 'service_health')
+        self.assertEqual(records[0].code, 'validation_passed')
+        self.assertEqual(records[0].core_sha256, event_value['core_sha256'])
+
+    def test_journal_failure_does_not_block_validation(self):
+        out, err = io.StringIO(), io.StringIO()
+        with patch('runtime.bootstrap.RuntimeJournal.append',
+                   side_effect=JournalError('synthetic journal failure')):
+            with redirect_stdout(out), redirect_stderr(err):
+                code = main(['--check', '--journal', str(self.journal_path)])
+        self.assertEqual(code, 0)
+        self.assertIn('validation_passed', out.getvalue())
+        self.assertEqual(err.getvalue().count('journal_unavailable'), 1)
+        self.assertNotIn('synthetic journal failure', err.getvalue())
 
 
 if __name__ == '__main__':
