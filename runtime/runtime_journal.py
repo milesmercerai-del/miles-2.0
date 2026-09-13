@@ -23,7 +23,7 @@ EVENTS = {
     'memory_retrieval', 'relationship_retrieval', 'service_health', 'failure',
 }
 COMPONENTS = {
-    'bootstrap', 'chat', 'model', 'memory', 'relationship', 'runtime',
+    'bootstrap', 'chat', 'conversation', 'model', 'memory', 'relationship', 'runtime',
 }
 STATUSES = {'ok', 'info', 'degraded', 'failed'}
 _CODE_RE = re.compile(r'^[a-z0-9][a-z0-9_.-]{0,63}$')

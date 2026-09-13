@@ -26,6 +26,6 @@ Diagnostics expose model, Core digest and retrieved-record count, not memory or 
 
 ## Validation
 
-Eight focused integration tests pass on Linux with mocked model/HTTP responses: real Core and stored data reach the adapter, no database mutation, role separation, missing memory prevents requests, oversized context rejection, loopback/proxy configuration, malformed/tool-call responses, redirects and model failure. They do not establish real generation on the test runner or Windows compatibility. The next gate is the command above on the user's live Ollama installation.
+The combined tests/chat suite now has 21 passing tests on the Windows development workstation, covering the original single-turn adapter plus bounded continuous conversation, local exit handling, and conversation-journal behavior. Live Windows generation has also demonstrated working multi-turn context through the installed Ollama model. See PC_CONTINUOUS_CHAT.md for that evidence and its limits.
 
 Run integration checks with `py -3 -m unittest discover -s tests/chat -v`. Existing bootstrap, memory and security suites remain in place. No security enforcement code or Core text was changed.

@@ -50,3 +50,8 @@ A separate operator-driven CLI now saves candidate records with provenance and c
 ## Local model integration
 
 Use the [single-turn local chat command](docs/engineering/hackerbot/PC_LOCAL_CHAT.md) to send the verified Core and an explicitly selected candidate memory to the installed Llama 3.2 1B model. No model-driven actions or memory writes are enabled.
+
+
+## Continuous local conversation
+
+Run py -3 -m runtime.conversation for bounded in-memory multi-turn local conversation. Recent turns last only for the active process; no automatic memory writes, model-driven tools, or cross-session conversation persistence are enabled. See docs/engineering/hackerbot/PC_CONTINUOUS_CHAT.md.

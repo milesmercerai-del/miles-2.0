@@ -66,7 +66,7 @@ correction and curation, relationship guidance, a continuity test harness,
 and runtime journaling. Section 3's architecture labels are planning-level
 summaries; this dated checkpoint records the newer PC implementation evidence.
 
-Passing suite results supplied: bootstrap 11, chat 15, Core 8, continuity 8,
+Passing suite results supplied: bootstrap 11, chat 21, Core 8, continuity 8,
 memory 13, relationship 7; journal 8 run with 1 skip; security 34 run with
 5 skips. These results do not promote a new deployment security baseline.
 Six permission/symlink checks remain unverified on Pi/Linux.
@@ -80,12 +80,14 @@ The journal persisted startup, request, response and shutdown under one
 session. The inspected records contained metadata without prompt, answer or
 memory text and were read successfully by a separate Python process.
 
+A bounded continuous local text-conversation prototype is now implemented and Windows-verified. Recent user/assistant turns are retained in RAM for the active process only. A live two-turn Ollama check correctly carried the synthetic phrase purple toaster into the following answer. Plain quit now exits locally without a model request. No automatic memory writes, tool execution or cross-session persistence were added.
+
 Internet-disconnected operation remains UNCONFIRMED: successful output was
 provided, but disconnection during that run was not explicitly confirmed.
 
 Still open: production hardware adapters, physical deployment, integrated
-voice/I/O, deployment enforcement and recovery proof, broader conversational
-operation, and completed behavioral continuity experiments. Harness tests
+voice/I/O, deployment enforcement and recovery proof, persistent cross-session conversation history and broader long-horizon
+conversation behavior, and completed behavioral continuity experiments. Harness tests
 do not establish behavioral continuity.
 
 Next: maintain accurate implementation records, resolve the offline evidence
