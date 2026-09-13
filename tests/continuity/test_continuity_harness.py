@@ -67,6 +67,10 @@ class ContinuityHarnessTests(unittest.TestCase):
             counts[scenario.family] += 1
         self.assertEqual(counts, FAMILY_COUNTS)
 
+        forged = replace(first, sha256='0' * 64)
+        with self.assertRaisesRegex(ContinuityError, 'suite lock commitment mismatch'):
+            record_case(forged, 'case-1', responses())
+
     def test_suite_rejects_duplicate_case_id_and_wrong_mix(self):
         duplicate = scenarios()
         duplicate[-1] = replace(duplicate[-1], case_id='case-1')
@@ -101,6 +105,12 @@ class ContinuityHarnessTests(unittest.TestCase):
         other = record_case(suite, 'case-1', changed)
         self.assertNotEqual(record.capture_sha256, other.capture_sha256)
 
+        post_capture = list(record.responses)
+        post_capture[0] = replace(post_capture[0], raw_output='Post-capture edit.')
+        tampered = replace(record, responses=tuple(post_capture))
+        with self.assertRaisesRegex(ContinuityError, 'case capture commitment mismatch'):
+            blind_case(tampered, 'seed')
+
     def test_blinding_is_deterministic_and_evaluator_payload_hides_provenance(self):
         suite = lock_suite(scenarios())
         record = record_case(suite, 'case-1', responses(redact=True))
@@ -116,6 +126,7 @@ class ContinuityHarnessTests(unittest.TestCase):
         self.assertEqual([item.label for item in first.responses],
                          ['response-1', 'response-2', 'response-3'])
         self.assertEqual(provenance.input_sha256, first.input_sha256)
+        self.assertEqual(provenance.capture_sha256, record.capture_sha256)
 
     def test_blinded_commitment_detects_tampering(self):
         suite = lock_suite(scenarios())
@@ -146,6 +157,7 @@ class ContinuityHarnessTests(unittest.TestCase):
         revealed = reveal_evaluation(evaluation, provenance)
         self.assertEqual(len(revealed.ranked_candidates), 3)
         self.assertEqual(len(revealed.ranked_conditions), 3)
+        self.assertEqual(revealed.capture_sha256, record.capture_sha256)
 
         other_record = record_case(suite, 'case-2', responses())
         _, other_provenance = blind_case(other_record, 'seed')
