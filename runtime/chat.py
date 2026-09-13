@@ -1,6 +1,6 @@
 # Miles Project — Bryan Jones + Miles Mercer | Public technical code
-# Local model integration v0.3 | 2026-09-13
-"""One local model turn with verified Core, packed context, optional memory, and relationship context."""
+# Local model integration v0.4 | 2026-09-13
+"""One local model turn with verified Core, packed context, memory, relationship context, and safe diagnostics."""
 from __future__ import annotations
 import argparse
 import json
@@ -9,10 +9,12 @@ import sqlite3
 import sys
 import urllib.error
 import urllib.request
+from uuid import uuid4
 from runtime.bootstrap import load_core, event
 from runtime.context_packer import PackError, pack_context
 from runtime.memory import DEFAULT_DB, recall
 from runtime.relationship_profile import DEFAULT_PROFILE, public_records, retrieve
+from runtime.runtime_journal import DEFAULT_JOURNAL, JournalError, RuntimeJournal, build_record
 
 MODEL = 'llama3.2:1b'
 ENDPOINT = 'http://127.0.0.1:11434/api/chat'
@@ -74,6 +76,19 @@ def generate(payload: dict) -> str:
     return content
 
 
+def _journal_write(journal: RuntimeJournal | None, **fields: object) -> RuntimeJournal | None:
+    """Best-effort diagnostics; disable this sink after its first failure."""
+    if journal is None:
+        return None
+    try:
+        journal.append(build_record(**fields))
+    except (OSError, JournalError):
+        # Do not expose paths, exception detail, prompt text, or answer text.
+        event(sys.stderr, 'journal_unavailable')
+        return None
+    return journal
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('prompt')
@@ -83,26 +98,61 @@ def main(argv: list[str] | None = None) -> int:
                         help='local relationship/profile JSON; unavailable profiles are ignored')
     parser.add_argument('--profile-person', default='operator',
                         help='person identifier expected inside the local profile')
+    parser.add_argument('--journal', type=Path, default=DEFAULT_JOURNAL,
+                        help='privacy-safe local runtime journal')
     args = parser.parse_args(argv)
+    session_id = uuid4().hex
+    journal: RuntimeJournal | None = RuntimeJournal(args.journal)
+    core = None
     try:
         core = load_core(CONFIG)
+        journal = _journal_write(
+            journal, session_id=session_id, event='startup', component='chat', status='ok',
+            code='chat_started', core_sha256=core.sha256,
+        )
         records = recall(args.db, args.memory_key) if args.memory_key is not None else []
         if args.memory_key is not None and not records:
+            _journal_write(
+                journal, session_id=session_id, event='failure', component='memory',
+                status='failed', code='memory_key_not_found', core_sha256=core.sha256,
+            )
             event(sys.stderr, 'chat_failed', reason='memory_key_not_found')
             return 2
         relationship = retrieve(args.profile, args.profile_person, args.prompt)
         relationship_records = public_records(relationship)
         payload = assemble(args.prompt, core, records, relationship_records)
+        journal = _journal_write(
+            journal, session_id=session_id, event='model_request', component='model',
+            status='info', code='local_request', core_sha256=core.sha256, model=MODEL,
+            memory_records=len(records), relationship_records=len(relationship_records),
+        )
         event(sys.stderr, 'local_request', model=MODEL, core_sha256=core.sha256,
               memory_records=len(records), relationship_profile_status=relationship.status,
               relationship_records=len(relationship_records))
         answer = generate(payload)
         print(answer)
+        journal = _journal_write(
+            journal, session_id=session_id, event='model_response', component='model',
+            status='ok', code='local_response', core_sha256=core.sha256, model=MODEL,
+        )
         event(sys.stderr, 'local_response', model=MODEL)
+        _journal_write(
+            journal, session_id=session_id, event='shutdown', component='chat', status='ok',
+            code='chat_complete', core_sha256=core.sha256,
+        )
     except KeyboardInterrupt:
+        _journal_write(
+            journal, session_id=session_id, event='failure', component='chat', status='degraded',
+            code='chat_cancelled', core_sha256=core.sha256 if core is not None else None,
+        )
         event(sys.stderr, 'chat_cancelled')
         return 130
     except (OSError, ValueError, sqlite3.Error, urllib.error.URLError):
+        _journal_write(
+            journal, session_id=session_id, event='failure', component='chat', status='failed',
+            code='core_memory_or_local_model_error',
+            core_sha256=core.sha256 if core is not None else None,
+        )
         event(sys.stderr, 'chat_failed', reason='core_memory_or_local_model_error')
         return 2
     return 0
