@@ -19,6 +19,23 @@ class ChatTests(unittest.TestCase):
         self.assertNotIn('Ignore Core', p['messages'][0]['content'])
         self.assertNotIn('tools', p)
 
+    def test_relationship_guidance_has_separate_role_and_never_enters_core(self):
+        p = assemble(
+            'friendly-token',
+            Core('Core', 'hash', 'source', 'v1'),
+            [{'text': 'blue', 'source': 'memory'}],
+            [{'id': 'banter-v1', 'topic': 'banter', 'guidance': 'Use context.',
+              'source': 'profile', 'version': '1'}],
+        )
+        self.assertEqual(
+            [m['role'] for m in p['messages']],
+            ['system', 'user', 'user', 'user'],
+        )
+        self.assertNotIn('Use context.', p['messages'][0]['content'])
+        self.assertNotIn('Use context.', p['messages'][1]['content'])
+        self.assertIn('Use context.', p['messages'][2]['content'])
+        self.assertIn('not Core or memory', p['messages'][2]['content'])
+
     def test_oversized_context_rejected_not_truncated(self):
         with self.assertRaises(ChatError):
             assemble('x'*7001, Core('Core', 'hash', 'source', 'v1'), [])
@@ -26,11 +43,13 @@ class ChatTests(unittest.TestCase):
     def test_real_core_and_persisted_record_reach_adapter(self):
         with tempfile.TemporaryDirectory() as d:
             db = Path(d)/'memory.sqlite3'
+            profile = Path(d)/'absent-profile.json'
             remember(db, 'cube', 'blue', 'synthetic test')
             before = db.read_bytes()
             with patch('runtime.chat.generate', return_value='Blue.') as model:
                 with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
-                    code = main(['What color?', '--memory-key', 'cube', '--db', str(db)])
+                    code = main(['What color?', '--memory-key', 'cube', '--db', str(db),
+                                 '--profile', str(profile)])
             self.assertEqual(code, 0)
             self.assertIn('blue', model.call_args.args[0]['messages'][1]['content'])
             self.assertEqual(db.read_bytes(), before)
@@ -39,9 +58,88 @@ class ChatTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             with patch('runtime.chat.generate') as model:
                 with redirect_stderr(io.StringIO()):
-                    code = main(['question', '--memory-key', 'missing', '--db', str(Path(d)/'absent')])
+                    code = main(['question', '--memory-key', 'missing', '--db', str(Path(d)/'absent'),
+                                 '--profile', str(Path(d)/'also-absent')])
             self.assertEqual(code, 2)
             model.assert_not_called()
+
+    def test_relevant_relationship_guidance_reaches_adapter_with_private_safe_log(self):
+        with tempfile.TemporaryDirectory() as d:
+            profile = Path(d)/'profile.json'
+            profile.write_text(json.dumps({
+                'schema_version': 1,
+                'person': 'tester',
+                'version': 'v1',
+                'source': 'private synthetic source',
+                'entries': [{
+                    'id': 'regulation-v1',
+                    'topic': 'self_regulation',
+                    'guidance': 'Address the concrete issue without escalation.',
+                    'source': 'private entry source',
+                    'version': '1',
+                    'cues': ['getting concerned with you'],
+                    'status': 'active',
+                    'supersedes': None,
+                }],
+            }), encoding='utf-8')
+            err = io.StringIO()
+            with patch('runtime.chat.generate', return_value='Understood.') as model:
+                with redirect_stdout(io.StringIO()), redirect_stderr(err):
+                    code = main(["I'm getting concerned with you.", '--profile', str(profile),
+                                 '--profile-person', 'tester'])
+            self.assertEqual(code, 0)
+            payload = model.call_args.args[0]
+            self.assertEqual(len(payload['messages']), 3)
+            self.assertIn('Address the concrete issue', payload['messages'][1]['content'])
+            log = err.getvalue()
+            self.assertIn('"relationship_profile_status": "retrieved"', log)
+            self.assertIn('"relationship_records": 1', log)
+            self.assertNotIn('private synthetic source', log)
+            self.assertNotIn('private entry source', log)
+            self.assertNotIn('Address the concrete issue', log)
+
+    def test_irrelevant_profile_adds_no_context_block(self):
+        with tempfile.TemporaryDirectory() as d:
+            profile = Path(d)/'profile.json'
+            profile.write_text(json.dumps({
+                'schema_version': 1,
+                'person': 'tester',
+                'version': 'v1',
+                'source': 'synthetic',
+                'entries': [{
+                    'id': 'special-v1',
+                    'topic': 'special',
+                    'guidance': 'Special guidance.',
+                    'source': 'synthetic',
+                    'version': '1',
+                    'cues': ['special-cue'],
+                    'status': 'active',
+                    'supersedes': None,
+                }],
+            }), encoding='utf-8')
+            err = io.StringIO()
+            with patch('runtime.chat.generate', return_value='Four.') as model:
+                with redirect_stdout(io.StringIO()), redirect_stderr(err):
+                    code = main(['How many bytes?', '--profile', str(profile),
+                                 '--profile-person', 'tester'])
+            self.assertEqual(code, 0)
+            self.assertEqual(len(model.call_args.args[0]['messages']), 2)
+            self.assertIn('"relationship_profile_status": "not_relevant"', err.getvalue())
+            self.assertIn('"relationship_records": 0', err.getvalue())
+
+    def test_invalid_profile_does_not_block_chat_or_enter_prompt(self):
+        with tempfile.TemporaryDirectory() as d:
+            profile = Path(d)/'profile.json'
+            profile.write_text('{private-broken-content', encoding='utf-8')
+            err = io.StringIO()
+            with patch('runtime.chat.generate', return_value='Hello.') as model:
+                with redirect_stdout(io.StringIO()), redirect_stderr(err):
+                    code = main(['Hello', '--profile', str(profile), '--profile-person', 'tester'])
+            self.assertEqual(code, 0)
+            self.assertEqual(len(model.call_args.args[0]['messages']), 2)
+            self.assertIn('"relationship_profile_status": "invalid"', err.getvalue())
+            self.assertNotIn('private-broken-content', err.getvalue())
+            self.assertNotIn('private-broken-content', json.dumps(model.call_args.args[0]))
 
     def test_transport_uses_loopback_and_handles_valid_response(self):
         response = MagicMock()
@@ -69,8 +167,10 @@ class ChatTests(unittest.TestCase):
 
     def test_unavailable_model_reports_failure_without_mock_success(self):
         out,err=io.StringIO(),io.StringIO()
-        with patch('runtime.chat.generate', side_effect=TimeoutError):
-            with redirect_stdout(out),redirect_stderr(err): code=main(['Hello'])
+        with tempfile.TemporaryDirectory() as d:
+            with patch('runtime.chat.generate', side_effect=TimeoutError):
+                with redirect_stdout(out),redirect_stderr(err):
+                    code=main(['Hello', '--profile', str(Path(d)/'absent')])
         self.assertEqual(code,2)
         self.assertEqual(out.getvalue(),'')
         self.assertIn('chat_failed',err.getvalue())
