@@ -82,16 +82,14 @@ memory text and were read successfully by a separate Python process.
 
 A bounded continuous local text-conversation prototype is now implemented and Windows-verified. Recent user/assistant turns are retained in RAM for the active process only. A live two-turn Ollama check correctly carried the synthetic phrase purple toaster into the following answer. Plain quit now exits locally without a model request. No automatic memory writes, tool execution or cross-session persistence were added.
 
-Internet-disconnected operation remains UNCONFIRMED: successful output was
-provided, but disconnection during that run was not explicitly confirmed.
+Internet-disconnected operation is now VERIFIED on the Windows development PC under the 2026-09-13 test condition. Wi-Fi and Ethernet were disconnected and a GitHub connectivity check failed at name resolution. While disconnected, the local conversation runtime loaded the persisted test-cube memory through llama3.2:1b, answered green with Bryan as the source, carried the prior exchange into the follow-up turn, and exited cleanly. This verifies the tested Windows PC path only; Raspberry Pi/Hackerbot offline operation remains unverified.
 
 Still open: production hardware adapters, physical deployment, integrated
 voice/I/O, deployment enforcement and recovery proof, persistent cross-session conversation history and broader long-horizon
 conversation behavior, and completed behavioral continuity experiments. Harness tests
 do not establish behavioral continuity.
 
-Next: maintain accurate implementation records, resolve the offline evidence
-gap, and follow the existing physical bring-up gates when hardware is available.
+Next: maintain accurate implementation records and follow the existing physical bring-up gates when hardware is available.
 
 ## 5. Security baseline
 

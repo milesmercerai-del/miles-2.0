@@ -48,4 +48,6 @@ No automatic memory writes, model-driven tools, or cross-session conversation pe
 
 
 
+Offline Windows evidence (2026-09-13): Wi-Fi and Ethernet were disconnected and a GitHub connectivity check failed at name resolution. While disconnected, Miles retrieved the persisted test-cube record through the local llama3.2:1b Ollama path, answered green with Bryan as the source, retained the exchange for the follow-up turn, and exited cleanly. This verifies the tested Windows PC configuration only.
+
 Raspberry Pi/Hackerbot deployment remains separately gated.
