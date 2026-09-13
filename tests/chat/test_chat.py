@@ -8,6 +8,7 @@ import unittest
 from unittest.mock import patch, MagicMock
 from runtime.bootstrap import Core
 from runtime.chat import assemble, generate, main, ChatError, NoRedirect, ENDPOINT
+from runtime.context_packer import PackError
 from runtime.memory import remember
 
 
@@ -39,6 +40,13 @@ class ChatTests(unittest.TestCase):
     def test_oversized_context_rejected_not_truncated(self):
         with self.assertRaises(ChatError):
             assemble('x'*7001, Core('Core', 'hash', 'source', 'v1'), [])
+
+    def test_packer_failure_preserves_chat_error_boundary(self):
+        with patch('runtime.chat.pack_context',
+                   side_effect=PackError('context exceeds prototype limit')) as packer:
+            with self.assertRaisesRegex(ChatError, 'context exceeds prototype limit'):
+                assemble('hello', Core('Core', 'hash', 'source', 'v1'), [])
+        packer.assert_called_once()
 
     def test_real_core_and_persisted_record_reach_adapter(self):
         with tempfile.TemporaryDirectory() as d:
