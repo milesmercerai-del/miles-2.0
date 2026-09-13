@@ -207,3 +207,9 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Local memory data; keep out of public source control
+*.sqlite3
+*.sqlite3-*
+*.db
+*.db-*

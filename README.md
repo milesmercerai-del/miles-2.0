@@ -42,3 +42,7 @@ Public technical project record.
 ## PC bootstrap
 
 Run `python -m runtime.bootstrap` (Windows: `py -3 -m runtime.bootstrap`) for the mock-only pre-hardware harness. See [PC setup and limitations](docs/engineering/hackerbot/PC_BOOTSTRAP.md). No model or hardware is required.
+
+## Local memory prototype
+
+A separate operator-driven CLI now saves candidate records with provenance and correction history across process restarts. See [PC memory walkthrough](docs/engineering/hackerbot/PC_MEMORY.md). Model conversation integration remains pending.

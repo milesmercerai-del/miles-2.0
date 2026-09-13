@@ -31,3 +31,6 @@ jobs:
 
       - name: Run PC bootstrap regression suite
         run: python -m unittest discover -s tests/bootstrap -p "test_*.py" -v
+
+      - name: Run local memory regression suite
+        run: python -m unittest discover -s tests/memory -p "test_*.py" -v
