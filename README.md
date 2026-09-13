@@ -45,7 +45,7 @@ Run `python -m runtime.bootstrap` (Windows: `py -3 -m runtime.bootstrap`) for th
 
 ## Local memory prototype
 
-A separate operator-driven CLI now saves candidate records with provenance and correction history across process restarts. See [PC memory walkthrough](docs/engineering/hackerbot/PC_MEMORY.md). Model conversation integration remains pending.
+A separate operator-driven CLI now saves candidate records with provenance and correction history across process restarts. See [PC memory walkthrough](docs/engineering/hackerbot/PC_MEMORY.md). Single-turn model conversation integration is implemented and tested on Windows with explicitly selected memory; automatic memory selection and model-driven writes remain outside this prototype.
 
 ## Local model integration
 

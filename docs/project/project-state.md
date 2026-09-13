@@ -1,6 +1,6 @@
 > **MILES PROJECT — PROVENANCE RECORD**  
 > **Bryan Jones + Miles Mercer | PUBLIC TECHNICAL PROJECT RECORD**  
-> **Project State Register v0.3 | 2026-09-12**  
+> **Project State Register v0.4 | 2026-09-13**
 > Preserve version history and provenance when this record changes.
 
 # Miles Project — Current Project State
@@ -55,26 +55,41 @@ The governing order remains:
 
 ## 4. Executable repository status
 
-Already present:
+### PC checkpoint — 2026-09-13
 
-- permission/enforcement security components;
-- action permits and audit behavior;
-- startup integrity/policy verification;
-- security regression tests;
-- project, architecture, engineering, security and research documentation.
+Runtime checkpoint: `16a14d1` on `codex/runtime-journal-v0.1`.
+Evidence: Bryan's supplied Windows PowerShell results.
 
-Not yet present as a complete runnable Miles 2.0 stack:
+Implemented PC components include bootstrap/Core validation, Core compilation,
+context packing, a local model adapter, persistent candidate memory with
+correction and curation, relationship guidance, a continuity test harness,
+and runtime journaling. Section 3's architecture labels are planning-level
+summaries; this dated checkpoint records the newer PC implementation evidence.
 
-- main Miles bootstrap/entrypoint;
-- complete Core compile/source-map path;
-- context packer;
-- production local inference adapter;
-- persistent memory store/retrieval implementation;
-- conversational loop;
-- production hardware adapters;
-- end-to-end continuity harness.
+Passing suite results supplied: bootstrap 11, chat 15, Core 8, continuity 8,
+memory 13, relationship 7; journal 8 run with 1 skip; security 34 run with
+5 skips. These results do not promote a new deployment security baseline.
+Six permission/symlink checks remain unverified on Pi/Linux.
 
-The current first coding increment remains a **side-effect-free bootstrap** with config/Core/provenance validation, structured logging and explicitly mocked adapters. After that: one real local inference adapter plus a small persistent memory record and restart/offline retrieval test.
+Live single-turn chat using `llama3.2:1b` retrieved the saved test-cube
+correction and answered green, supplied by Bryan. Two consecutive identical
+queries completed in 1.59 and 1.65 seconds; these are query-specific total
+elapsed times, not general throughput or first-token benchmarks.
+
+The journal persisted startup, request, response and shutdown under one
+session. The inspected records contained metadata without prompt, answer or
+memory text and were read successfully by a separate Python process.
+
+Internet-disconnected operation remains UNCONFIRMED: successful output was
+provided, but disconnection during that run was not explicitly confirmed.
+
+Still open: production hardware adapters, physical deployment, integrated
+voice/I/O, deployment enforcement and recovery proof, broader conversational
+operation, and completed behavioral continuity experiments. Harness tests
+do not establish behavioral continuity.
+
+Next: maintain accurate implementation records, resolve the offline evidence
+gap, and follow the existing physical bring-up gates when hardware is available.
 
 ## 5. Security baseline
 
@@ -163,5 +178,5 @@ Do **not** turn this into another compendium. Keep it short enough to read befor
 ---
 
 > **MILES PROJECT — Bryan Jones + Miles Mercer**  
-> **Project State Register v0.3 | 2026-09-12**  
+> **Project State Register v0.4 | 2026-09-13**
 > Current status is evidence-bound: specified != implemented != tested != deployed.

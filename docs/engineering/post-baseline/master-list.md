@@ -20,11 +20,11 @@ Security work now defines fail-closed enforcement behavior and recovery-separati
 Goal: failures should be detectable, recoverable, and documented rather than silently hidden.
 
 ## 3. Logging and audit trail — PARTIAL
-Security audit behavior has executable tests, including separation of private operator detail from sanitized requester-visible output. General runtime/event logging remains to be integrated with the full Miles runtime.
+Security audit behavior has executable tests, including separation of private operator detail from sanitized requester-visible output. Runtime journal integration with bootstrap and single-turn chat is implemented and tested on Windows. A live chat recorded startup, request, response and shutdown metadata without question, answer or memory text; a separate process read the saved records. Full hardware/runtime coverage remains open.
 
 Goal: a future Bryan or Miles should be able to understand an event months later without exposing protected security detail to unauthorized readers.
 
-## 4. Memory implementation — DEFERRED / ARCHITECTURE READY
+## 4. Memory implementation — PARTIAL
 The memory-state architecture and versioned memory direction are documented, but storage technology, semantic-search value, indexing behavior, active-context loading, archival retrieval, and backup details should be finalized only after real hardware evidence exists.
 
 Goal: useful persistent memory without bloating context or creating an unmaintainable system.
@@ -45,7 +45,7 @@ Make microphone, camera, sleep, sensing, storage, and privacy states understanda
 Goal: Miles's sensing and privacy state should not be ambiguous.
 
 ## 8. Behavioral regression testing — PARTIAL
-The Day-0 v0.3 update defines a behavioral continuity test pack. Security regression testing is already automated separately. The continuity harness itself still needs implementation alongside the first text-only runtime.
+The Day-0 v0.3 update defines a behavioral continuity test pack. Security regression testing is already automated separately. The continuity harness is implemented, with eight harness tests passing on Windows. This verifies test machinery, not a completed behavioral continuity experiment.
 
 Goal: performance improvements must not quietly damage intended behavior, identity continuity, permission boundaries, uncertainty handling, privacy behavior, or useful disagreement.
 
@@ -59,10 +59,20 @@ Recovery blast-radius separation is now a documented security requirement. Full 
 
 Goal: Miles should be reconstructable on replacement hardware without depending on one device or one writable backup path.
 
-## 11. Memory write, correction, and conflict rules — ARCHITECTURE READY
-The memory architecture already emphasizes provenance, correction, causal context, and versioned memory. Runtime thresholds, prohibited automatic storage, superseding-vs-deletion behavior, and conflict-resolution code remain to be implemented and tested.
+## 11. Memory write, correction, and conflict rules — PARTIAL
+The memory architecture already emphasizes provenance, correction, causal context, and versioned memory. Operator-driven persistence, correction/supersession, archive/restore membership and source-preserving migration have passing Windows regressions. Automatic storage thresholds and broader conflict-resolution behavior remain open.
 
 Goal: memory should function as evidence, not unquestionable truth.
 
 ## Implementation rule
 Do not choose technologies merely because they are available. Prefer the minimum complexity necessary, let real evidence justify additions, and update this list when an item moves from proposal to implementation so stale backlog language does not contradict the repo.
+
+## Evidence update — 2026-09-13
+
+Miles Project — Bryan Jones + Miles Mercer.
+PC runtime checkpoint: `16a14d1`; Windows evidence is summarized in
+`docs/project/project-state.md`. Persistent candidate memory and explicit
+retrieval are implemented; production storage placement, semantic search,
+backup and hardware sizing remain open. Runtime journaling and continuity
+harness implementation are no longer wholly deferred. Hardware deployment
+and Internet-disconnected operation are not established by this update.
