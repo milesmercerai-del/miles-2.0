@@ -1,5 +1,5 @@
 # Miles Project — Bryan Jones + Miles Mercer | Public technical code
-# Bootstrap v0.1 | 2026-09-13
+# Bootstrap v0.2 | 2026-09-13
 """Read-only PC harness. No model inference, persistence, or device execution."""
 from __future__ import annotations
 
@@ -10,6 +10,8 @@ import json
 from pathlib import Path
 import sys
 from typing import TextIO
+
+CANONICAL_CORE_SOURCE = 'docs/core/MILES_CORE_COMPACT.md'
 
 
 class BootstrapError(ValueError):
@@ -56,6 +58,27 @@ def load_core(config_path: Path) -> Core:
     if not core_text.strip():
         raise BootstrapError('Core is empty')
     return Core(core_text, digest, config['core_source'], config['core_version'])
+
+
+def _compile_canonical_core():
+    # Keep direct-script execution working when the repository root is not cwd.
+    try:
+        from runtime.core_compiler import compile_core
+    except ModuleNotFoundError:
+        from core_compiler import compile_core
+    return compile_core()
+
+
+def verify_core_compilation(core: Core) -> str | None:
+    """Fail closed on canonical Miles Core provenance; leave generic fixtures generic."""
+    if core.source != CANONICAL_CORE_SOURCE:
+        return None
+    compilation = _compile_canonical_core()
+    if compilation.source_path != core.source:
+        raise BootstrapError('compiled Core source mismatch')
+    if compilation.source_sha256 != core.sha256:
+        raise BootstrapError('compiled Core provenance mismatch')
+    return compilation.sha256
 
 
 class MockModel:
@@ -106,12 +129,16 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     try:
         core = load_core(args.config)
+        compiled_sha256 = verify_core_compilation(core)
     except (OSError, ValueError, UnicodeError):
         # Do not copy paths, Core contents, or malformed configuration into logs.
         event(sys.stderr, 'boot_failed', reason='config_or_core_invalid')
         return 2
     if args.check:
-        event(sys.stdout, 'validation_passed', mode='mock', core_sha256=core.sha256)
+        fields = {'mode': 'mock', 'core_sha256': core.sha256}
+        if compiled_sha256 is not None:
+            fields['compiled_core_sha256'] = compiled_sha256
+        event(sys.stdout, 'validation_passed', **fields)
         return 0
     return run(core, sys.stdin, sys.stdout, sys.stderr)
 
