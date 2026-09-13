@@ -1,4 +1,5 @@
 # Miles Project — Bryan Jones + Miles Mercer | 2026-09-13
+from contextlib import closing
 import json
 from pathlib import Path
 import sqlite3
@@ -52,11 +53,11 @@ class MemoryTests(unittest.TestCase):
         self.assertEqual(self.path.read_bytes(), b'not a database')
 
     def test_unsupported_schema_is_preserved(self):
-        with sqlite3.connect(self.path) as db:
+        with closing(sqlite3.connect(self.path)) as db:
             db.execute('PRAGMA user_version=99')
         with self.assertRaises(MemoryError):
             remember(self.path, 'test', 'text', 'test')
-        with sqlite3.connect(self.path) as db:
+        with closing(sqlite3.connect(self.path)) as db:
             self.assertEqual(db.execute('PRAGMA user_version').fetchone()[0], 99)
 
     def test_invalid_record_does_not_create_storage(self):
