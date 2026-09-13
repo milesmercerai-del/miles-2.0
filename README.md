@@ -46,3 +46,7 @@ Run `python -m runtime.bootstrap` (Windows: `py -3 -m runtime.bootstrap`) for th
 ## Local memory prototype
 
 A separate operator-driven CLI now saves candidate records with provenance and correction history across process restarts. See [PC memory walkthrough](docs/engineering/hackerbot/PC_MEMORY.md). Model conversation integration remains pending.
+
+## Local model integration
+
+Use the [single-turn local chat command](docs/engineering/hackerbot/PC_LOCAL_CHAT.md) to send the verified Core and an explicitly selected candidate memory to the installed Llama 3.2 1B model. No model-driven actions or memory writes are enabled.
