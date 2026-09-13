@@ -1,6 +1,6 @@
 # Miles Project — Bryan Jones + Miles Mercer | Public technical code
-# Bootstrap v0.2 | 2026-09-13
-"""Read-only PC harness. No model inference, persistence, or device execution."""
+# Bootstrap v0.3 | 2026-09-13
+"""Read-only PC harness with verified Core provenance and privacy-safe diagnostics."""
 from __future__ import annotations
 
 import argparse
@@ -10,6 +10,9 @@ import json
 from pathlib import Path
 import sys
 from typing import TextIO
+from uuid import uuid4
+
+from runtime.runtime_journal import DEFAULT_JOURNAL, JournalError, RuntimeJournal, build_record
 
 CANONICAL_CORE_SOURCE = 'docs/core/MILES_CORE_COMPACT.md'
 
@@ -91,8 +94,27 @@ def event(stream: TextIO, name: str, **fields: object) -> None:
     print(json.dumps({'event': name, **fields}, sort_keys=True), file=stream)
 
 
-def run(core: Core, source: TextIO, output: TextIO, log: TextIO) -> int:
+def _journal_write(journal: RuntimeJournal | None, log: TextIO, **fields: object) -> RuntimeJournal | None:
+    """Best-effort diagnostics: journal failure must not become runtime failure."""
+    if journal is None:
+        return None
+    try:
+        journal.append(build_record(**fields))
+    except (OSError, JournalError):
+        # Never include a path, exception string, prompt, or Core text here.
+        event(log, 'journal_unavailable')
+        return None
+    return journal
+
+
+def run(core: Core, source: TextIO, output: TextIO, log: TextIO,
+        *, journal: RuntimeJournal | None = None, session_id: str | None = None) -> int:
     model = MockModel()
+    session_id = session_id or uuid4().hex
+    journal = _journal_write(
+        journal, log, session_id=session_id, event='startup', component='bootstrap',
+        status='ok', code='mock_boot_ready', core_sha256=core.sha256,
+    )
     event(log, 'boot_ready', mode='mock', core_sha256=core.sha256,
           hardware='unavailable', persistence='unavailable', inference=False)
     print('Miles PC harness — MOCK ONLY. Type /quit to exit.', file=output)
@@ -117,6 +139,10 @@ def run(core: Core, source: TextIO, output: TextIO, log: TextIO) -> int:
     except KeyboardInterrupt:
         pass
     finally:
+        _journal_write(
+            journal, log, session_id=session_id, event='shutdown', component='bootstrap',
+            status='ok', code='clean_shutdown', core_sha256=core.sha256,
+        )
         event(log, 'shutdown', clean=True)
     return 0
 
@@ -126,21 +152,35 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument('--config', type=Path,
                         default=Path(__file__).resolve().parents[1] / 'config/bootstrap.mock.json')
     parser.add_argument('--check', action='store_true', help='validate only; do not open text loop')
+    parser.add_argument('--journal', type=Path, default=DEFAULT_JOURNAL,
+                        help='privacy-safe local runtime journal')
     args = parser.parse_args(argv)
+    session_id = uuid4().hex
+    journal: RuntimeJournal | None = RuntimeJournal(args.journal)
     try:
         core = load_core(args.config)
         compiled_sha256 = verify_core_compilation(core)
     except (OSError, ValueError, UnicodeError):
+        _journal_write(
+            journal, sys.stderr, session_id=session_id, event='failure', component='bootstrap',
+            status='failed', code='config_or_core_invalid',
+        )
         # Do not copy paths, Core contents, or malformed configuration into logs.
         event(sys.stderr, 'boot_failed', reason='config_or_core_invalid')
         return 2
     if args.check:
+        _journal_write(
+            journal, sys.stderr, session_id=session_id, event='service_health',
+            component='bootstrap', status='ok', code='validation_passed',
+            core_sha256=core.sha256,
+        )
         fields = {'mode': 'mock', 'core_sha256': core.sha256}
         if compiled_sha256 is not None:
             fields['compiled_core_sha256'] = compiled_sha256
         event(sys.stdout, 'validation_passed', **fields)
         return 0
-    return run(core, sys.stdin, sys.stdout, sys.stderr)
+    return run(core, sys.stdin, sys.stdout, sys.stderr,
+               journal=journal, session_id=session_id)
 
 
 if __name__ == '__main__':
