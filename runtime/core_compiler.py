@@ -15,6 +15,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SOURCE = REPO_ROOT / 'docs' / 'core' / 'MILES_CORE_COMPACT.md'
 MAX_CORE_BYTES = 65536
 MAX_SUPPORT_BYTES = 262144
+SUPPORT_HASH_MODE = 'utf8-lf-sha256'
 _SECTION_RE = re.compile(r'^## ([1-8])\. ([^\r\n]+)$', re.MULTILINE)
 _MAP_RE = re.compile(
     r'^- `([^`\r\n]+)` → §([1-8])(?: ([^\r\n]+))?$',
@@ -72,6 +73,12 @@ def _sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+def _support_sha256(data: bytes) -> str:
+    text = data.decode('utf-8')
+    normalized = text.replace('\r\n', '\n').replace('\r', '\n')
+    return _sha256(normalized.encode('utf-8'))
+
+
 def _parse_sections(text: str) -> list[tuple[int, str, str]]:
     map_marker = '\n## Supporting-source map\n'
     map_start = text.find(map_marker)
@@ -81,9 +88,16 @@ def _parse_sections(text: str) -> list[tuple[int, str, str]]:
     if [int(match.group(1)) for match in section_matches] != list(range(1, 9)):
         raise CoreCompileError('Core must contain sections 1 through 8 exactly once and in order')
 
+    final_separator = text.rfind('\n\n---\n', section_matches[-1].start(), map_start)
+    if final_separator < 0:
+        raise CoreCompileError('Core/source-map separator missing')
+
     parsed: list[tuple[int, str, str]] = []
     for index, match in enumerate(section_matches):
-        end = section_matches[index + 1].start() if index + 1 < len(section_matches) else map_start
+        if index + 1 < len(section_matches):
+            end = section_matches[index + 1].start()
+        else:
+            end = final_separator
         block = text[match.start():end].rstrip()
         if not block.strip():
             raise CoreCompileError('Core section is empty')
@@ -134,7 +148,7 @@ def _resolve_sources(source_path: Path, root: Path,
             data = _read_bounded(candidate, MAX_SUPPORT_BYTES)
             refs.append(SourceRef(
                 path=candidate.relative_to(root).as_posix(),
-                sha256=_sha256(data),
+                sha256=_support_sha256(data),
                 note=note,
             ))
         resolved[number] = tuple(refs)
@@ -184,6 +198,7 @@ def compile_core(source_path: Path = DEFAULT_SOURCE, root: Path = REPO_ROOT) -> 
 def public_manifest(compilation: CoreCompilation) -> dict[str, Any]:
     return {
         'schema_version': 1,
+        'support_hash_mode': SUPPORT_HASH_MODE,
         'source_path': compilation.source_path,
         'source_sha256': compilation.source_sha256,
         'compiled_sha256': compilation.sha256,
