@@ -28,3 +28,6 @@ jobs:
 
       - name: Run security regression suite
         run: python -m unittest discover -s tests/security -p "test_*.py" -v
+
+      - name: Run PC bootstrap regression suite
+        run: python -m unittest discover -s tests/bootstrap -p "test_*.py" -v

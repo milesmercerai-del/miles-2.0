@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "adapter": "mock",
+  "core_path": "../docs/core/MILES_CORE_COMPACT.md",
+  "core_sha256": "8298ad9605666593cd23aea2e3eca98ade90dcb51cf1bb13fc4dea32b79e2972",
+  "core_source": "docs/core/MILES_CORE_COMPACT.md",
+  "core_version": "canonical compact Core v0.1 at 24485c841fbe1ebd5805dd9c73c6e4d5d49af987"
+}

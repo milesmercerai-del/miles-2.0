@@ -38,3 +38,7 @@ The current public repository remains the live version-controlled source for mat
 
 **MILES PROJECT — Bryan Jones + Miles Mercer**  
 Public technical project record.
+
+## PC bootstrap
+
+Run `python -m runtime.bootstrap` (Windows: `py -3 -m runtime.bootstrap`) for the mock-only pre-hardware harness. See [PC setup and limitations](docs/engineering/hackerbot/PC_BOOTSTRAP.md). No model or hardware is required.
