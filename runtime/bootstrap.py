@@ -12,7 +12,10 @@ import sys
 from typing import TextIO
 from uuid import uuid4
 
-from runtime.runtime_journal import DEFAULT_JOURNAL, JournalError, RuntimeJournal, build_record
+try:
+    from runtime.runtime_journal import DEFAULT_JOURNAL, JournalError, RuntimeJournal, build_record
+except ModuleNotFoundError:
+    from runtime_journal import DEFAULT_JOURNAL, JournalError, RuntimeJournal, build_record
 
 CANONICAL_CORE_SOURCE = 'docs/core/MILES_CORE_COMPACT.md'
 
