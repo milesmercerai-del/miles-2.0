@@ -141,7 +141,7 @@ def _load_manifest(
 def sha256_file(path: str | Path, *, chunk_size: int = 1024 * 1024) -> str:
     """Hash a regular file without following a final-component symlink."""
     target = Path(path)
-    flags = os.O_RDONLY | getattr(os, "O_CLOEXEC", 0) | getattr(os, "O_NOFOLLOW", 0)
+    flags = os.O_RDONLY | getattr(os, "O_CLOEXEC", 0) | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_BINARY", 0)
     try:
         fd = os.open(target, flags)
     except OSError as exc:
@@ -177,7 +177,7 @@ def read_verified_bytes(
         raise ValueError("max_bytes must be positive")
 
     target = Path(path)
-    flags = os.O_RDONLY | getattr(os, "O_CLOEXEC", 0) | getattr(os, "O_NOFOLLOW", 0)
+    flags = os.O_RDONLY | getattr(os, "O_CLOEXEC", 0) | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_BINARY", 0)
     try:
         fd = os.open(target, flags)
     except OSError as exc:
